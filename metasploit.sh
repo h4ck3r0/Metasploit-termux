@@ -23,12 +23,12 @@ wr () {
                                        }
                                        2line() {
                                                 
-                                                cd ~/Metasploit-termux/.object ; bash b.sh
+                                                cd ~/Metasploit-termux/.object ; bash r.sh
                                                 cd ~/Metasploit-termux ; bash metasploit.sh
                                                }
                                                3line() {
                                                       
-                                                       cd ~/Metasploit-termux/.object ; bash r.sh                                                      
+                                                       cd ~/Metasploit-termux/.object ; bash b.sh                                                      
                                                        cd ~/Metasploit-termux ; bash metasploit.sh
                                                        
                                                          }
@@ -41,7 +41,7 @@ wr () {
                                                                             rm -rf ~/Metasploit-termux
                                                                             cd
                                                                             git clone https://github.com/h4ck3r0/Metasploit-termux
-                                                                            cd ~/kali-theme ; bash metasploit.sh
+                                                                            cd ~/Metasploit-termux ; bash metasploit.sh
        
                                                                   }
     selection () {

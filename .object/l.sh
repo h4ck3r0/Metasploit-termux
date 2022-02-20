@@ -17,9 +17,8 @@ echo -e "${RED}     ░     ░  ░           ░           ${ENDCOLOR}   "
 cwd=$(pwd)
 msfvar=6.0.27
 msfpath='/data/data/com.termux/files/home'
-
-echo -e "\033[92m"
-center "INSTALLING REQUIREED PACKAGES"
+ech ""
+echo -e "\033[92mINSTALLING REQUIREED PACKAGES"
 echo -e "\e[34mPACKAGES BEING INSTALLED WAIT....\e[0m"
 
 apt update && apt upgrade -y
@@ -41,8 +40,7 @@ curl -LO https://github.com/rapid7/metasploit-framework/archive/refs/tags/$msfva
 tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework
 cd $msfpath/metasploit-framework
-echo -e "\033[92m"
-center "Working On Some Fixes .....\e[0m"
+echo -e "\033[92mWorking On Some Fixes .....\e[0m"
 apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby.deb $loc
 cd $loc

@@ -17,31 +17,24 @@ wr () {
                                selection
                                }
                                1line() {
-                                        sudo apt update 
-                                        sudo apt install zsh
-                                        sudo apt install ruby
-                                        sudo apt install wget
-                                        sudo apt install curl
-                                        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+                                        cd ~/Metasploit-termux/.object ; bash ml.sh
                                         cd ~/Metasploit-termux ; bash metasploit.sh 
                                         
                                        }
                                        2line() {
-                                                sudo chsh -s zsh
-                                                cd ~/Metasploit-termux/.object ; bash .1.sh
+                                                
+                                                cd ~/Metasploit-termux/.object ; bash b.sh
                                                 cd ~/Metasploit-termux ; bash metasploit.sh
                                                }
                                                3line() {
-                                                       sudo chsh -s zsh 
-                                                       cd ~/Metasploit-termux/.object ; bash .2.sh                                                      
+                                                      
+                                                       cd ~/Metasploit-termux/.object ; bash r.sh                                                      
                                                        cd ~/Metasploit-termux ; bash metasploit.sh
                                                        
                                                          }
                                                           4line() {
-                                                                  rm -r ~/.zshrc
-                                                                  cd ~/Metasploit-termux/.object
-                                                                  cp  -r .zshrc ~/.zshrc
-                                                                  
+                                                                  cd ~/Metasploit-termux/.object ; bash re.sh                                                      
+                                                       cd ~/Metasploit-termux ; bash metasploit.sh
                                                                   cd ~/kali-theme ; bash metasploit.sh
                                                                   }
                                                                   5line() {                                                                  

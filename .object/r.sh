@@ -15,14 +15,13 @@ echo -e "${RED}  ░▒ ░ ▒░ ░ ░  ░░▒ ░       ▒   ▒▒ ░
 echo -e "${RED}  ░░   ░    ░   ░░         ░   ▒    ▒ ░  ░░   ░ "
 echo -e "${RED}   ░        ░  ░               ░  ░ ░     ░   "  
                                                 
-echo -e "\033[92m"                           
-center "Repairing.....\e[0m"
+echo -e "\033[92m Repairing.....\e[0m"
 apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby.deb $loc
 cd $loc
 apt install -y ./ruby.deb 
 apt-mark hold ruby
-cd $loc/metasploit-framework 
+cd $HOME/metasploit-framework 
 gem install bundler
 bundle config set force_ruby_platform true
 bundle install
@@ -44,4 +43,5 @@ cd $loc
 rm $ver.tar.gz 
 rm ruby.deb 
 echo -e "\033[92m"
-center "Repairing.....\e[0m"
+"Repaired Successfully\e[0m"
+cd ~/Metasploit-termux ; bash metasploit.sh

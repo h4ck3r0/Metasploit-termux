@@ -19,7 +19,7 @@ msfvar=6.1.31
 msfpath='/data/data/com.termux/files/home'
 
 echo -e "\033[92m"
-center "INSTALLING REQUIREED PACKAGES"
+"INSTALLING REQUIREED PACKAGES"
 echo -e "\e[34mPACKAGES BEING INSTALLED WAIT....\e[0m"
 
 apt update && apt upgrade -y
@@ -31,8 +31,7 @@ ln -sf $PREFIX/include/libxml2/libxml $PREFIX/include/
 echo -e "\e[34mPACKAGES INSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[0m"
 sleep 5.0
 clear
-echo -e "\033[92m"
-center "INSTALLING  METASPLOIT"
+echo -e "\033[92mINSTALLING  METASPLOIT"
 echo -e "\e[34mINSTALLING METASPLOIT....\e[0m"
 
 cd $msfpath

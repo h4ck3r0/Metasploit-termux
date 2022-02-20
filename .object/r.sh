@@ -17,8 +17,8 @@ echo -e "${RED}   ░        ░  ░               ░  ░ ░     ░   "
                                                 
 echo -e "\033[92m Repairing.....\e[0m"
 apt remove -y ruby
-cp -r ~/Metasploit-termux/.object/ruby.deb $loc
-cd $loc
+cp -r ~/Metasploit-termux/.object/ruby.deb $HOME/
+cd $HOME
 apt install -y ./ruby.deb 
 apt-mark hold ruby
 cd $HOME/metasploit-framework 
@@ -39,7 +39,7 @@ mkdir -p $PREFIX/var/lib/postgresql >/dev/null 2>&1
 initdb $PREFIX/var/lib/postgresql 
 pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
-cd $loc
+cd $HOME
 rm $ver.tar.gz 
 rm ruby.deb 
 echo -e "\033[92m"

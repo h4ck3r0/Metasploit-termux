@@ -1,6 +1,4 @@
-sudo apt install toilet  -y
-sudo apt install ruby -y
-sudo apt install figlet -y
+
 gem install lolcat
 clear
 
@@ -74,3 +72,4 @@ wr () {
                                   
                                   selection
                                   }
+menu

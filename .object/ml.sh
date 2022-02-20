@@ -26,22 +26,16 @@ wr () {
                                                 cd ~/Metasploit-termux/.object ; bash m.sh
                                                 
                                                }
-                                                         3line() {
-                                                                  rm -rf ~/Metasploit-termux
-                                                                  cd
-                                                                  git clone https://github.com/h4ck3r0/Metasploit-termux
-                                                                  cd ~/Metasploit-termux ; bash metasploit.sh
-                                                                  }
+                                                       
     selection () {
                                            
                                             echo -e -n "\e[1;96m Choose\e[1;96m Option : \e[0m"
-                                            cd ~/Termux-banner
+                                            cd ~/Metasploit-termux
                                             read a
                                             case $a in
                                             1) 1line ;;
                                             2) 2line ;;
-                                            3) 3line ;;
-                                            4) exit ;;
+                                            3) exit ;;
                                             *) wr ;;
 
                                             esac 
@@ -51,8 +45,7 @@ wr () {
                                   banner
                                   printf "\n\033[1;91m[\033[0m1\033[1;91m]\033[1;92m metasploit  for  4.4 and 6.0 version \n"
                                   printf "\033[1;91m[\033[0m2\033[1;91m]\033[1;92m Metasploit  for  7.0 and  above \n"
-                                  printf "\033[1;91m[\033[0m3\033[1;91m]\033[1;92m Update\n"
-                                  printf "\033[1;91m[\033[0m4\033[1;91m]\033[1;92m Exit\n\n\n"
+                                  printf "\033[1;91m[\033[0m3\033[1;91m]\033[1;92m Exit\n\n\n"
                                   
                                   selection
                                   }

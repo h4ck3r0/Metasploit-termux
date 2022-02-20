@@ -15,7 +15,7 @@ echo -e "${RED}░  ░  ░     ░    ░       ░░░ ░ ░ ░░      
 echo -e "${RED}     ░     ░  ░           ░           ${ENDCOLOR}   " 
 
 cwd=$(pwd)
-msfvar=6.1.31
+msfvar=6.1.21
 msfpath='/data/data/com.termux/files/home'
 
 echo -e "\033[92mINSTALLING REQUIREED PACKAGES"

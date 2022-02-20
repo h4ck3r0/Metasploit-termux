@@ -18,8 +18,7 @@ cwd=$(pwd)
 msfvar=6.1.31
 msfpath='/data/data/com.termux/files/home'
 
-echo -e "\033[92m"
-"INSTALLING REQUIREED PACKAGES"
+echo -e "\033[92mINSTALLING REQUIREED PACKAGES"
 echo -e "\e[34mPACKAGES BEING INSTALLED WAIT....\e[0m"
 
 apt update && apt upgrade -y
@@ -35,7 +34,7 @@ echo -e "\033[92mINSTALLING  METASPLOIT"
 echo -e "\e[34mINSTALLING METASPLOIT....\e[0m"
 
 cd $msfpath
-curl -LO https://github.com/rapid7/metasploit-framework/archive/refs/tags/$msfvar.tar.gz
+curl -LO https://github.com/rapid7/metasploit-framework/archive/$msfvar.tar.gz
 
 tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework

@@ -16,24 +16,24 @@ ____________________        _____________
 |______|______|______|      .--|_______|--.      Backup
 
 ' | lolcat
-echo -e "${RED}                MeTaSpLoIt BaCk Up PrOcEsS...$"
+echo -e "${RED} MeTaSpLoIt BaCk Up PrOcEsS...$"
 echo "  "
-echo -e "${GREEN}        [ThIs MaY TaKe TiMe UpTo 30 SeCoNdS sO wAiT]${ENDCOLOR}"
+echo -e "${GREEN} [ThIs MaY TaKe TiMe UpTo 30 SeCoNdS sO wAiT]${ENDCOLOR}"
 
 if [ -d $HOME/metasploit-framework ]; then
-echo -e "${YELLOW}                  Metasploit is backing up...!${ENDCOLOR}"
+echo -e "${YELLOW} Metasploit is backing up...!${ENDCOLOR}"
 cd $HOME/Metasploit-termux/.object
 rm -rf backup
 mkdir backup
-
+termux-setup-storage
 cp -r $HOME/metasploit-framework $HOME/Metasploit-termux/.object/backup
 mv backup /sdcard
-echo -e "${GREEN}        [Backup Completed]${ENDCOLOR}"
-echo -e "${YELLOW}            NoW YoU CAn ReStOrE It AnY TiMe${ENDCOLOR}"
+echo -e "${GREEN} [Backup Completed]${ENDCOLOR}"
+echo -e "${YELLOW} NoW YoU CAn ReStOrE It AnY TiMe${ENDCOLOR}"
 else
 echo " "
 echo " "
-echo -e "$ylo            Metasploit is not installed please install it ${ENDCOLOR}"
+echo -e "${YELLOW} Metasploit is not installed please install it ${ENDCOLOR}"
 sleep 3.0
 echo " "
 echo " "

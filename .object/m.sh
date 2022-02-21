@@ -40,10 +40,9 @@ curl -LO https://github.com/rapid7/metasploit-framework/archive/$msfvar.tar.gz
 tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework
 cd $msfpath/metasploit-framework
-echo -e "\033[92m"
-center "Working On Some Fixes .....\e[0m"
+echo -e "\033[92mWorking On Some Fixes .....\e[0m"
 apt remove -y ruby
-cp -r ~/Metasploit-termux/.object/ruby.deb $HOME/
+cp -r ~/Metasploit-termux/.object/ruby.deb $HOME
 cd $HOME
 apt install -y ./ruby.deb 
 apt-mark hold ruby
@@ -59,8 +58,7 @@ bundle config build.nokogiri --use-system-libraries
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 clear
-echo -e "\033[92m"
-center "Creating Postgresql Database\e[0m"
+echo -e "\033[92mCreating Postgresql Database\e[0m"
 mkdir -p $PREFIX/var/lib/postgresql >/dev/null 2>&1
 initdb $PREFIX/var/lib/postgresql 
 pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
@@ -71,6 +69,6 @@ rm ruby.deb
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
 echo -e "\e[34mTO START METASPLOIT TYPE (./msfconsole) INSIDE METASPLOIT FRAMEWORK\e[0m"
 
-cd $loc/metasploit-framework
+cd $HOME/metasploit-framework
 clear
 ./msfconsole

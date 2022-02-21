@@ -1,4 +1,4 @@
-
+pkg install ruby
 gem install lolcat
 clear
 

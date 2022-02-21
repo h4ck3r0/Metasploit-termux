@@ -9,7 +9,7 @@
 <a href="https://h4ck3r0.github.io/"><img title="Maintainence" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"></a>
 </p>
 <p align="center">
- <a href=""><img src="https://user-images.githubusercontent.com/46929618/154995380-01e96c5a-d84a-4c38-850c-36091d265ba7.png" width="1000" hight="300"></a>
+ <a href=""><img src="https://user-images.githubusercontent.com/46929618/154997514-8bd1d6c6-6b3d-4251-a6ce-6b8bceb22b06.png" width="1000" hight="300"></a>
 </p>
 <p align="center">
 <a href="https://github.com/h4ck3r0"><img title="Github" src="https://img.shields.io/badge/H4CK3R-RAJ-brightgreen?style=for-the-badge&logo=github"></a>
@@ -55,13 +55,9 @@
 * `cd Metasploit-termux`
 * `chmod +x *`
 * `bash metasploit.sh`
-```
+
 [+]-- cd metasploit-framework ; ./msfconsole
-```
 
- 
-
-```
 ## CONNECT WITH US :
 <a href="https://www.buymeacoffee.com/h4ck3r" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 

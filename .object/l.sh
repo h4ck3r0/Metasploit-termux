@@ -47,6 +47,8 @@ cp -r ~/Metasploit-termux/.object/ruby.deb $loc
 cd $loc
 apt install -y ./ruby.deb 
 apt-mark hold ruby
+wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
+bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
 gem install bundler
 bundle config set force_ruby_platform true

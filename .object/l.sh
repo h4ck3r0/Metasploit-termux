@@ -24,6 +24,7 @@ echo -e "\e[34mPACKAGES BEING INSTALLED WAIT....\e[0m"
 apt update && apt upgrade -y
 
 apt install -y binutils libiconv zlib autoconf bison clang coreutils curl findutils git apr apr-util libffi libgmp libpcap postgresql readline libsqlite openssl libtool libxml2 libxslt ncurses pkg-config wget make ruby libgrpc termux-tools ncurses-utils ncurses unzip zip tar termux-elf-cleaner
+apt -y --fix-broken install
 # Many phones are claiming libxml2 not found error
 ln -sf $PREFIX/include/libxml2/libxml $PREFIX/include/
 
@@ -58,8 +59,7 @@ bundle config build.nokogiri --use-system-libraries
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 clear
-echo -e "\033[92m"
-center "Creating Postgresql Database\e[0m"
+echo -e "\033[92mCreating Postgresql Database\e[0m"
 mkdir -p $PREFIX/var/lib/postgresql >/dev/null 2>&1
 initdb $PREFIX/var/lib/postgresql 
 pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
@@ -70,6 +70,6 @@ rm ruby.deb
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
 echo -e "\e[34mTO START METASPLOIT TYPE (./msfconsole) INSIDE METASPLOIT FRAMEWORK\e[0m"
 
-cd $loc/metasploit-framework
+cd $HOME/metasploit-framework
 clear
 ./msfconsole

@@ -44,7 +44,7 @@ cd $msfpath/metasploit-framework
 echo -e "\033[92mWorking On Some Fixes .....\e[0m"
 apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby.deb $loc
-cd $loc
+cd $HOME
 apt install -y ./ruby.deb 
 apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1

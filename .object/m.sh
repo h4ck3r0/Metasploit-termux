@@ -81,7 +81,7 @@ pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
 cd $HOME
 rm $ver.tar.gz 
-rm ruby.deb 
+rm ruby1.deb 
 
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
 echo -e "\e[34mTO START METASPLOIT TYPE (./msfconsole) INSIDE METASPLOIT FRAMEWORK\e[0m"

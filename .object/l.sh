@@ -1,5 +1,6 @@
 clear
-
+mob=$(uname -o)
+arc=$(dpkg --print-architecture)
 RED="\e[31m"
 GREEN="\e[32m"
 ENDCOLOR="\e[0m"

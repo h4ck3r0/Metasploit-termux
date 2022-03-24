@@ -125,6 +125,9 @@ apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
+else
+echo
+fi
 gem install bundler
 bundle config set force_ruby_platform true
 bundle install

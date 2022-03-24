@@ -123,12 +123,16 @@ cp -r ~/Metasploit-termux/.object/ruby.deb $HOME
 cd $HOME
 apt install -y ./ruby.deb 
 apt-mark hold ruby
+sleep 5.0
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
+sleep 3.0
 gem install bundler
 bundle config set force_ruby_platform true
+sleep 3.0
 bundle install
+sleep 2.0
 gem install actionpack
 bundle update activesupport
 bundle update --bundler

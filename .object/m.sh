@@ -18,7 +18,7 @@ echo -e "${RED}     ░     ░  ░           ░           ${ENDCOLOR}   "
 sleep 5.0
 if [ -d $HOME/metasploit-framework ];
 then
-center "CHEKING OLD METASPLOIT"
+echo -e "\033[92mCHEKING OLD METASPLOIT"
 echo -e "\e[34mREMOVING METASPLOIT.....WAIT\e[0m"
 find . -type d -name "metasploit-*" -exec rm -rf "{}" \; >/dev/null 
 sleep 4.0

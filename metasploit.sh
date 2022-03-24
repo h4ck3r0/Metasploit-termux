@@ -32,7 +32,7 @@ wr () {
                                }
                                1line() {
                                         cd ~/Metasploit-termux/.object ; bash ml.sh
-                                        cd ~/Metasploit-termux ; bash metasploit.sh 
+                                        
                                         
                                        }
                                        2line() {

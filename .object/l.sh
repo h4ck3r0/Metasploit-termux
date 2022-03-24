@@ -125,9 +125,7 @@ apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
-else
-echo
-fi
+
 gem install bundler
 bundle config set force_ruby_platform true
 bundle install
@@ -146,7 +144,9 @@ termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib
 cd $HOME
 rm $ver.tar.gz 
 rm ruby.deb 
-
+else
+echo
+fi
 
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
 echo -e "\e[34mTO START METASPLOIT TYPE (./msfconsole) INSIDE METASPLOIT FRAMEWORK\e[0m"

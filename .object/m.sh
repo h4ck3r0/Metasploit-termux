@@ -135,9 +135,7 @@ bundle update activesupport
 bundle update --bundler
 bundle install -j$(nproc --all)
 bundle config build.nokogiri --use-system-libraries
-else
-echo
-fi
+
 clear
 echo -e "\033[92mCreating Postgresql Database\e[0m"
 mkdir -p $PREFIX/var/lib/postgresql >/dev/null 2>&1
@@ -147,7 +145,9 @@ termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib
 cd $HOME
 rm $ver.tar.gz 
 rm ruby.deb 
-
+else
+echo
+fi
 
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
 echo -e "\e[34mTO START METASPLOIT TYPE (./msfconsole) INSIDE METASPLOIT FRAMEWORK\e[0m"

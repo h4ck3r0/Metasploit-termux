@@ -64,6 +64,16 @@ apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
+cd $HOME/metasploit-framework
+sed '/rbnacl/d' -i Gemfile.lock
+sed '/rbnacl/d' -i metasploit-framework.gemspec
+
+echo 
+
+
+export MSF_FIX="spec.add_runtime_dependency 'net-smtp'"
+sed -i "146i \  $MSF_FIX" metasploit-framework.gemspec
+sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 gem install bundler
 bundle config set force_ruby_platform true
 bundle install
@@ -127,6 +137,16 @@ sleep 5.0
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
+cd $HOME/metasploit-framework
+sed '/rbnacl/d' -i Gemfile.lock
+sed '/rbnacl/d' -i metasploit-framework.gemspec
+
+echo 
+
+
+export MSF_FIX="spec.add_runtime_dependency 'net-smtp'"
+sed -i "146i \  $MSF_FIX" metasploit-framework.gemspec
+sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 sleep 3.0
 gem install bundler
 bundle config set force_ruby_platform true

@@ -21,6 +21,7 @@ then
 echo -e "\033[92mCHEKING OLD METASPLOIT"
 echo -e "\e[34mREMOVING METASPLOIT.....WAIT\e[0m"
 find . -type d -name "metasploit-*" -exec rm -rf "{}" \; >/dev/null 
+rm -rf metasploit-framework
 sleep 4.0
 echo -e "\e[34mREMOVED METASPLOIT SUCCESSFULLY.....[\e[92m✓\e[34m]\e[0m"
 sleep 4.0
@@ -38,7 +39,7 @@ echo -e "\e[34mPACKAGES BEING INSTALLED WAIT....\e[0m"
 
 apt update && apt upgrade -y
 
-apt install -y binutils libiconv zlib autoconf bison clang coreutils curl findutils git apr apr-util libffi libgmp libpcap postgresql readline libsqlite openssl-dev libtool libxml2 libxslt ncurses pkg-config wget make ruby libgrpc termux-tools ncurses-utils ncurses unzip zip tar termux-elf-cleaner
+pkg install -y python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils ncurses git wget unzip zip tar termux-tools termux-elf-cleaner pkg-config git ruby -o Dpkg::Options::="--force-confnew" --allow-change-held-packages
 apt --fix-broken install
 # Many phones are claiming libxml2 not found error
 ln -sf $PREFIX/include/libxml2/libxml $PREFIX/include/
@@ -64,16 +65,6 @@ apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
-cd $HOME/metasploit-framework
-sed '/rbnacl/d' -i Gemfile.lock
-sed '/rbnacl/d' -i metasploit-framework.gemspec
-
-echo 
-
-
-export MSF_FIX="spec.add_runtime_dependency 'net-smtp'"
-sed -i "146i \  $MSF_FIX" metasploit-framework.gemspec
-sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 gem install bundler
 bundle config set force_ruby_platform true
 bundle install
@@ -102,7 +93,7 @@ clear
 
 elif [[ $arc = "aarch64" ]];
 then
-msfvar=6.1.21
+msfvar=6.1.35
 msfpath='/data/data/com.termux/files/home'
 
 echo -e "\033[92mINSTALLING REQUIREED PACKAGES"
@@ -110,7 +101,7 @@ echo -e "\e[34mPACKAGES BEING INSTALLED WAIT....\e[0m"
 
 apt update && apt upgrade -y
 
-apt install -y binutils libiconv zlib autoconf bison clang coreutils curl findutils git apr apr-util libffi libgmp libpcap postgresql readline libsqlite openssl-dev libtool libxml2 libxslt ncurses pkg-config wget make ruby libgrpc termux-tools ncurses-utils ncurses unzip zip tar termux-elf-cleaner
+pkg install -y python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils ncurses git wget unzip zip tar termux-tools termux-elf-cleaner pkg-config git ruby -o Dpkg::Options::="--force-confnew" --allow-change-held-packages
 apt --fix-broken install
 # Many phones are claiming libxml2 not found error
 ln -sf $PREFIX/include/libxml2/libxml $PREFIX/include/
@@ -138,15 +129,6 @@ wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal
 bash fix-ruby-bigdecimal.sh.txt
 cd $HOME/metasploit-framework 
 cd $HOME/metasploit-framework
-sed '/rbnacl/d' -i Gemfile.lock
-sed '/rbnacl/d' -i metasploit-framework.gemspec
-
-echo 
-
-
-export MSF_FIX="spec.add_runtime_dependency 'net-smtp'"
-sed -i "146i \  $MSF_FIX" metasploit-framework.gemspec
-sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 sleep 3.0
 gem install bundler
 bundle config set force_ruby_platform true

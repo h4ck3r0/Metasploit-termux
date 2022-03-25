@@ -55,10 +55,9 @@ tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework
 cd $msfpath/metasploit-framework
 echo -e "\033[92mWorking On Some Fixes .....\e[0m"
-apt remove -y ruby
+
 cp -r ~/Metasploit-termux/.object/ruby1.deb $HOME
 cd $HOME
-apt install -y ./ruby1.deb 
 apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
@@ -117,10 +116,8 @@ tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework
 cd $msfpath/metasploit-framework
 echo -e "\033[92mWorking On Some Fixes .....\e[0m"
-apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby.deb $HOME
 cd $HOME
-apt install -y ./ruby.deb 
 apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt

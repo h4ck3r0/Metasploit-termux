@@ -49,8 +49,8 @@
 
 * `apt-get update -y`
 * `apt-get upgrade -y`
-* `apt install git ruby -y`
-* `gem install lolcat`
+* `apt install python python2 -y`
+* `pip install lolcat`
 * `git clone https://github.com/h4ck3r0/Metasploit-termux`
 * `cd $HOME`
 * `ls`

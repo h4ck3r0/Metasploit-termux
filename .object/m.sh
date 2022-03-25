@@ -57,7 +57,6 @@ tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework
 cd $msfpath/metasploit-framework
 echo -e "\033[92mWorking On Some Fixes .....\e[0m"
-apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby1.deb $HOME
 cd $HOME
 apt-mark hold ruby
@@ -118,7 +117,6 @@ tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework
 cd $msfpath/metasploit-framework
 echo -e "\033[92mWorking On Some Fixes .....\e[0m"
-apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby.deb $HOME
 cd $HOME
 apt-mark hold ruby

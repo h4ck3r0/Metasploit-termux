@@ -31,7 +31,7 @@ echo
 fi
 if [[ $arc = "arm" ]];
 then
-msfvar=6.1.21
+msfvar=6.1.35
 msfpath='/data/data/com.termux/files/home'
 
 echo -e "\033[92mINSTALLING REQUIREED PACKAGES"
@@ -60,7 +60,6 @@ echo -e "\033[92mWorking On Some Fixes .....\e[0m"
 apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby1.deb $HOME
 cd $HOME
-apt install -y ./ruby1.deb 
 apt-mark hold ruby
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1
 bash fix-ruby-bigdecimal.sh.txt
@@ -122,7 +121,6 @@ echo -e "\033[92mWorking On Some Fixes .....\e[0m"
 apt remove -y ruby
 cp -r ~/Metasploit-termux/.object/ruby.deb $HOME
 cd $HOME
-apt install -y ./ruby.deb 
 apt-mark hold ruby
 sleep 5.0
 wget https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt >/dev/null 2>&1

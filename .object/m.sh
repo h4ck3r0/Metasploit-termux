@@ -59,7 +59,7 @@ clear
 echo -e "\e[34m[\e[92m✓\e[34m]\e[34m PACKAGES INSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[0m"
 
 sleep 5.0
-
+clear
 echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Fixing ruby BigDecimal...\033[0m"
 echo ""
 source <(curl -sL https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt)

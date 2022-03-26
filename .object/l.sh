@@ -1,6 +1,10 @@
-mob=$(uname -o)
-arc=$(dpkg --print-architecture)
+
 clear
+center() {
+  termwidth=$(stty size | cut -d" " -f2)
+  padding="$(printf '%0.1s' ={1..500})"
+  printf '%*.*s %s %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+}
 
 RED="\e[31m"
 GREEN="\e[32m"
@@ -40,32 +44,38 @@ Pin-Priority: 1001' | tee $PREFIX/etc/apt/preferences.d/preferences
 # Purge installed ruby
 apt purge ruby -y
 rm -fr $PREFIX/lib/ruby/gems
-echo -e "\033[92mINSTALLING REQUIREED PACKAGES"
+clear
+echo -e "\e[34m[\e[92m✓\e[34m]\033[92m INSTALLING REQUIREED PACKAGES"
 sleep 5.0
 pkg upgrade -y -o Dpkg::Options::="--force-confnew"
 pkg install -y python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils ncurses git wget unzip zip tar termux-tools termux-elf-cleaner pkg-config git ruby -o Dpkg::Options::="--force-confnew" --allow-change-held-packages
-echo -e "\e[34mPACKAGES BEING INSTALLED WAIT....\e[0m"
-sleeep 5.0
+echo -e "\e[34m"
+center "PACKAGES BEING INSTALLED WAIT"
+sleep 5.0
 python3 -m pip install --upgrade pip
 python3 -m pip install requests
+clear
+echo -e "\e[34m[\e[92m✓\e[34m]\e[34m PACKAGES INSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[0m"
 
-echo -e "\e[34mPACKAGES INSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[0m"
 sleep 5.0
-
-echo -e "\033[92mFix ruby BigDecimal..."
+clear
+echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Fixing ruby BigDecimal...\033[0m"
 echo ""
 source <(curl -sL https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt)
 
-echo -e  "\033[92mCHEKING OLD METASPLOIT"
+echo -e "\e[34m[\e[92m✓\e[34m]\033[92m CHEKING OLD METASPLOIT"
 find . -type d -name "metasploit-*" -exec rm -rf "{}" \; >/dev/null 
 sleep 4.0
-echo -e "\e[34mREMOVING METASPLOIT.....WAIT\e[0m"
+echo -e "\e[34m"
+center "REMOVING METASPLOIT.....WAIT"
 rm -rf $HOME/metasploit-framework
-echo -e "\e[34mREMOVED METASPLOIT SUCCESSFULLY.....[\e[92m✓\e[34m]\e[0m"
+echo -e "\e[34m[\e[92m✓\e[34m]\e[34m REMOVED METASPLOIT SUCCESSFULLY.....[\e[92m✓\e[34m]\e[0m"
 sleep 4.0
 echo
 clear
-echo -e "\e[34mINSTALLING METASPLOIT....\e[0m"
+echo -e "\e[34m"
+center "INSTALLING METASPLOIT"
+echo -e "\e[0m"
 sleep 5.0
 cd $HOME
 msfvar=6.0.27
@@ -78,7 +88,7 @@ tar -xf $msfpath/$msfvar.tar.gz
 mv $msfpath/metasploit-framework-$msfvar $msfpath/metasploit-framework
 cd $msfpath/metasploit-framework
 clear
-echo -e "\033[92mWorking On Some Fixes .....\e[0m"
+echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Working On Some Fixes .....\e[0m"
 sleep 5.0
 cd $HOME/metasploit-framework
 sed '/rbnacl/d' -i Gemfile.lock
@@ -113,7 +123,9 @@ ln -s $HOME/metasploit-framework/msfvenom /data/data/com.termux/files/usr/bin/
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
 
 echo
-echo -e "\033[32m Still Fixing\033[0m"
+echo -e "\033[32m"
+center " Still Fixing....."
+echo -e "\033[0m"
 
 sed -i '355 s/::Exception, //' $PREFIX/bin/msfvenom
 sed -i '481, 483 {s/^/#/}' $PREFIX/bin/msfvenom
@@ -124,12 +136,12 @@ rm -rf /data/data/com.termux/files/usr/bin/msfvenom
 sed -i '13,15 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.1.0/gems/hrr_rb_ssh-0.4.2/lib/hrr_rb_ssh/transport/encryption_algorithm/functionable.rb; sed -i '14 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.1.0/gems/hrr_rb_ssh-0.4.2/lib/hrr_rb_ssh/transport/server_host_key_algorithm/ecdsa_sha2_nistp256.rb; sed -i '14 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.1.0/gems/hrr_rb_ssh-0.4.2/lib/hrr_rb_ssh/transport/server_host_key_algorithm/ecdsa_sha2_nistp384.rb; sed -i '14 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.1.0/gems/hrr_rb_ssh-0.4.2/lib/hrr_rb_ssh/transport/server_host_key_algorithm/ecdsa_sha2_nistp521.rb;
 
 cd;cd metasploit-framework;ln -s $HOME/metasploit-framework/msfvenom /data/data/com.termux/files/usr/bin/
-echo -e "\033[92mCreating Postgresql Database\e[0m"
+echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Creating Postgresql Database\e[0m"
 sleep 5.0
 mkdir -p $PREFIX/var/lib/postgresql >/dev/null 2>&1
 initdb $PREFIX/var/lib/postgresql 
 pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
-echo -e "\033[32m  type msfconsole to run the metasploit\033[0m"
-
+echo 
+cd ~/metasploit-framework && ./msfconsole

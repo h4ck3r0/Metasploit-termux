@@ -81,7 +81,7 @@ sleep 5.0
 cd $HOME
 git clone https://github.com/rapid7/metasploit-framework.git --depth=1
 clear
-echo -e "\e[34m[\e[92m✓\e[34m]\033[92mWorking On Some Fixes .....\e[0m"
+echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Working On Some Fixes .....\e[0m"
 sleep 5.0
 cd $HOME/metasploit-framework
 sed '/rbnacl/d' -i Gemfile.lock

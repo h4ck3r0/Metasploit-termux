@@ -51,7 +51,7 @@ sleep 5.0
 pkg upgrade -y -o Dpkg::Options::="--force-confnew"
 pkg install -y python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils ncurses git wget unzip zip tar termux-tools termux-elf-cleaner pkg-config git ruby -o Dpkg::Options::="--force-confnew" --allow-change-held-packages
 echo -e "\e[34m"
-center "PACKAGES BEING INSTALLED WAIT...."
+center "PACKAGES BEING INSTALLED WAIT"
 sleep 5.0
 python3 -m pip install --upgrade pip
 python3 -m pip install requests
@@ -75,7 +75,7 @@ sleep 4.0
 echo
 clear
 echo -e "\e[34m"
-center "INSTALLING METASPLOIT...."
+center "INSTALLING METASPLOIT"
 echo -e "\e[0m"
 sleep 5.0
 cd $HOME

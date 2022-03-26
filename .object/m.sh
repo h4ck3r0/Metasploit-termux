@@ -122,7 +122,7 @@ termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib
 
 echo
 echo 
-centre "\033[32m Still Fixing\033[0m"
+centre "\e[34m[\e[92m✓\e[34m]\033[32m Still Fixing\033[0m"
 
 sed -i '355 s/::Exception, //' $PREFIX/bin/msfvenom
 sed -i '481, 483 {s/^/#/}' $PREFIX/bin/msfvenom
@@ -134,7 +134,7 @@ sed -i '13,15 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.1.0/gems
 
 cd;cd metasploit-framework;ln -s $HOME/metasploit-framework/msfvenom /data/data/com.termux/files/usr/bin/
 echo 
-centre "\033[92mCreating Postgresql Database\e[0m"
+centre "\e[34m[\e[92m✓\e[34m]\033[92m Creating Postgresql Database\e[0m"
 sleep 5.0
 mkdir -p $PREFIX/var/lib/postgresql >/dev/null 2>&1
 initdb $PREFIX/var/lib/postgresql 

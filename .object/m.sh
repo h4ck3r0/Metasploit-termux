@@ -47,7 +47,7 @@ apt purge ruby -y
 rm -fr $PREFIX/lib/ruby/gems
 clear
 echo 
-centre "\033[92mINSTALLING REQUIREED PACKAGES"
+centre "\e[34m[\e[92m✓\e[34m]\033[92m INSTALLING REQUIREED PACKAGES"
 sleep 5.0
 pkg upgrade -y -o Dpkg::Options::="--force-confnew"
 pkg install -y python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils ncurses git wget unzip zip tar termux-tools termux-elf-cleaner pkg-config git ruby -o Dpkg::Options::="--force-confnew" --allow-change-held-packages
@@ -58,24 +58,24 @@ python3 -m pip install --upgrade pip
 python3 -m pip install requests
 clear
 echo 
-centre "\e[34mPACKAGES INSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[0m"
+centre "\e[34m[\e[92m✓\e[34m]\e[34m PACKAGES INSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[0m"
 
 sleep 5.0
 
 echo 
-centre "\033[92mFix ruby BigDecimal...\033[0m"
+centre "\e[34m[\e[92m✓\e[34m]\033[92m Fixing ruby BigDecimal...\033[0m"
 echo ""
 source <(curl -sL https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt)
 
 echo 
-centre "\033[92mCHEKING OLD METASPLOIT"
+centre "\e[34m[\e[92m✓\e[34m]\033[92m CHEKING OLD METASPLOIT"
 find . -type d -name "metasploit-*" -exec rm -rf "{}" \; >/dev/null 
 sleep 4.0
 echo 
 centre "\e[34mREMOVING METASPLOIT.....WAIT\e[0m"
 rm -rf $HOME/metasploit-framework
 echo 
-centre "\e[34mREMOVED METASPLOIT SUCCESSFULLY.....[\e[92m✓\e[34m]\e[0m"
+centre "\e[34m[\e[92m✓\e[34m]\e[34m REMOVED METASPLOIT SUCCESSFULLY.....[\e[92m✓\e[34m]\e[0m"
 sleep 4.0
 echo
 clear
@@ -143,4 +143,4 @@ termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib
 echo 
 centre "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
 echo 
-centre "\033[32m  type msfconsole to run the metasploit\033[0m"
+cd ~/metasploit-framework && ./msfconsole

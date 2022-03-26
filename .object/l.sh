@@ -143,5 +143,6 @@ initdb $PREFIX/var/lib/postgresql
 pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
-echo 
+sleep 5.0
+clear
 cd ~/metasploit-framework && ./msfconsole

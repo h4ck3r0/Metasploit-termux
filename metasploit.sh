@@ -1,5 +1,5 @@
-pkg install ruby
-gem install lolcat
+pkg install python python2 -y
+pip install lolcat
 clear
 
 banner() {

@@ -90,8 +90,6 @@ sed '/rbnacl/d' -i metasploit-framework.gemspec
 echo 
 
 
-export MSF_FIX="spec.add_runtime_dependency 'net-smtp'"
-sed -i "146i \  $MSF_FIX" metasploit-framework.gemspec
 sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 
 gem install bundler

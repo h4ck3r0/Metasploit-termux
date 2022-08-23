@@ -128,7 +128,11 @@ sed -i '13,14 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.1.0/gems
 
 
 
-
+echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Creating Postgresql Database\e[0m"
+sleep 5.0
+mkdir -p $PREFIX/var/lib/postgresql >/dev/null 2>&1
+initdb $PREFIX/var/lib/postgresql 
+pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
 
 
 

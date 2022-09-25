@@ -93,6 +93,7 @@ echo
 sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 
 gem install bundler
+gem install nokogiri --platform=ruby
 sed 's|nokogiri (1.*)|nokogiri (1.8.0)|g' -i Gemfile.lock
 
 gem install nokogiri -v 1.8.0 -- --use-system-libraries

@@ -25,10 +25,15 @@
 </p>
 
 
+
 ### AVAILABLE ON :
 
 * Termux
 
+#### [Metasploit] Is Not Stable In Termux
+* `So No Gurantee With The Tool`
+* `You May Got Many Errors`
+* `Give A Star If You Want An Update`
 ### REQUIREMENTS :
 
 * Gem
@@ -45,7 +50,7 @@
 * [+] Restore !
 * [+] Error fixed !
 
-## INSTALLATION [Termux] :
+### INSTALLATION [Termux] :
 
 * `apt-get update -y`
 * `apt-get upgrade -y`
@@ -60,7 +65,7 @@
 
 [+]-- cd metasploit-framework ; ./msfconsole
 
-## CONNECT WITH US :
+### CONNECT WITH US :
 <a href="https://www.buymeacoffee.com/h4ck3r" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 <a href="https://github.com/h4ck3r0"><img title="Github" src="https://img.shields.io/badge/H4Ck3R-Raj-brightgreen?style=for-the-badge&logo=github"></a>

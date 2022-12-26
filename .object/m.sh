@@ -84,19 +84,25 @@ clear
 echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Working On Some Fixes .....\e[0m"
 sleep 5.0
 cd $HOME/metasploit-framework
-sed '/rbnacl/d' -i Gemfile.lock
-sed '/rbnacl/d' -i metasploit-framework.gemspec
+# Not Need Any More
+# sed '/rbnacl/d' -i Gemfile.lock
+# sed '/rbnacl/d' -i metasploit-framework.gemspec
 
 echo 
+#fixed
 
-
-sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
+# sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 
 gem install bundler
-gem install nokogiri --platform=ruby
-sed 's|nokogiri (1.*)|nokogiri (1.8.0)|g' -i Gemfile.lock
+declare NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
+# gem install nokogiri --platform=ruby
+# sed 's|nokogiri (1.*)|nokogiri (1.8.0)|g' -i Gemfile.lock
 
-gem install nokogiri -v 1.8.0 -- --use-system-libraries
+# gem install nokogiri -v 1.8.0 -- --use-system-libraries
+gem install nokogiri -v $NOKOGIRI_VERSION -- --use-system-libraries
+
+# for aarch64 
+bundle config build.nokogiri "--use-system-libraries --with-xml2-include=$PREFIX/include/libxml2"; bundle install
 
 gem install actionpack
 bundle update activesupport

@@ -78,7 +78,7 @@ center "INSTALLING METASPLOIT"
 echo -e "\e[0m"
 sleep 5.0
 cd $HOME
-msfvar=6.0.27
+msfvar=6.1.36
 msfpath='/data/data/com.termux/files/home'
 
 cd $msfpath
@@ -92,13 +92,14 @@ echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Working On Some Fixes .....\e[0m"
 sleep 5.0
 cd $HOME/metasploit-framework
 # Not Need Any More
-# sed '/rbnacl/d' -i Gemfile.lock
-# sed '/rbnacl/d' -i metasploit-framework.gemspec
+
+ sed '/rbnacl/d' -i Gemfile.lock
+ sed '/rbnacl/d' -i metasploit-framework.gemspec
 
 echo 
 #fixed
 
-# sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
+sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 
 gem install bundler
 declare NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")

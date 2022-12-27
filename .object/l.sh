@@ -46,7 +46,9 @@ echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Fixing ruby BigDecimal...\033[0m"
 echo ""
 source <(curl -sL https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt)
 
+
 echo -e "\e[34m[\e[92m✓\e[34m]\033[92m CHEKING OLD METASPLOIT"
+
 find . -type d -name "metasploit-*" -exec rm -rf "{}" \; >/dev/null 
 sleep 4.0
 echo -e "\e[34m"

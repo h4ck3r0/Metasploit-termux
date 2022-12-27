@@ -22,25 +22,7 @@ echo -e "${RED}░  ░  ░     ░    ░       ░░░ ░ ░ ░░      
 echo -e "${RED}     ░     ░  ░           ░           ${ENDCOLOR}   " 
 sleep 5.0
 
-# Install gnupg required to sign repository
-pkg install -y gnupg
 
-# Sign gushmazuko repository
-curl -fsSL https://raw.githubusercontent.com/gushmazuko/metasploit_in_termux/master/gushmazuko-gpg.pubkey | gpg --dearmor | tee $PREFIX/etc/apt/trusted.gpg.d/gushmazuko-repo.gpg
-
-# Add gushmazuko repository to install ruby 2.7.2 version
-echo 'deb https://github.com/gushmazuko/metasploit_in_termux/raw/master gushmazuko main'  | tee $PREFIX/etc/apt/sources.list.d/gushmazuko.list
-
-# Set low priority for all gushmazuko repository (for security purposes)
-# Set highest priority for ruby package from gushmazuko repository
-echo '## Set low priority for all gushmazuko repository (for security purposes)
-Package: *
-Pin: release gushmazuko
-Pin-Priority: 100
-## Set highest priority for ruby package from gushmazuko repository
-Package: ruby
-Pin: release gushmazuko
-Pin-Priority: 1001' | tee $PREFIX/etc/apt/preferences.d/preferences
 
 # Purge installed ruby
 apt purge ruby -y
@@ -84,22 +66,27 @@ clear
 echo -e "\e[34m[\e[92m✓\e[34m]\033[92m Working On Some Fixes .....\e[0m"
 sleep 5.0
 cd $HOME/metasploit-framework
+
 # Not Need Any More
-# sed '/rbnacl/d' -i Gemfile.lock
-# sed '/rbnacl/d' -i metasploit-framework.gemspec
+
+sed '/rbnacl/d' -i Gemfile.lock
+sed '/rbnacl/d' -i metasploit-framework.gemspec
 
 echo 
+
 #fixed
 
-# sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
+ sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
 
 gem install bundler
 declare NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
+declare SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
 # gem install nokogiri --platform=ruby
 # sed 's|nokogiri (1.*)|nokogiri (1.8.0)|g' -i Gemfile.lock
 
 # gem install nokogiri -v 1.8.0 -- --use-system-libraries
 gem install nokogiri -v $NOKOGIRI_VERSION -- --use-system-libraries
+gem install sqlite3 -v $SQLITE3_VERSION -- --use-system-libraries
 
 # for aarch64 
 bundle config build.nokogiri "--use-system-libraries --with-xml2-include=$PREFIX/include/libxml2"; bundle install

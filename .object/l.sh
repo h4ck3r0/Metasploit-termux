@@ -84,7 +84,7 @@ cd $HOME/metasploit-framework
 echo 
 #fixed
 
-sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
+sed -i "305,\$ s/0.13.1/0.14.1/" Gemfile.lock
 
 gem install bundler
 declare NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
@@ -101,6 +101,7 @@ gem install actionpack
 bundle update activesupport
 bundle update --bundler
 bundle install -j$(nproc --all)
+gem install pry
 
 #$PREFIX/bin/find -type f -executable -exec termux-fix-shebang \{\} \;
 #rm ./modules/auxiliary/gather/http_pdf_authors.rb

@@ -69,14 +69,14 @@ cd $HOME/metasploit-framework
 
 # Not Need Any More
 
-sed '/rbnacl/d' -i Gemfile.lock
-sed '/rbnacl/d' -i metasploit-framework.gemspec
+#sed '/rbnacl/d' -i Gemfile.lock
+#sed '/rbnacl/d' -i metasploit-framework.gemspec
 
 echo 
 
 #fixed
 
- sed -i "277,\$ s/2.8.0/2.2.0/" Gemfile.lock
+ sed -i "305,\$ s/0.13.1/0.14.1/" Gemfile.lock
 
 gem install bundler
 declare NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
@@ -86,7 +86,7 @@ declare SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\
 
 # gem install nokogiri -v 1.8.0 -- --use-system-libraries
 gem install nokogiri -v $NOKOGIRI_VERSION -- --use-system-libraries
-gem install sqlite3 -v $SQLITE3_VERSION -- --use-system-libraries
+gem install pry
 
 # for aarch64 
 bundle config build.nokogiri "--use-system-libraries --with-xml2-include=$PREFIX/include/libxml2"; bundle install

@@ -21,25 +21,8 @@ echo -e "${RED}░  ░  ░     ░    ░       ░░░ ░ ░ ░░      
 echo -e "${RED}     ░     ░  ░           ░           ${ENDCOLOR}   " 
 sleep 5.0
 
-# Install gnupg required to sign repository
-pkg install -y gnupg
-
-# Sign gushmazuko repository
-curl -fsSL https://raw.githubusercontent.com/gushmazuko/metasploit_in_termux/master/gushmazuko-gpg.pubkey | gpg --dearmor | tee $PREFIX/etc/apt/trusted.gpg.d/gushmazuko-repo.gpg
-
-# Add gushmazuko repository to install ruby 2.7.2 version
-echo 'deb https://github.com/gushmazuko/metasploit_in_termux/raw/master gushmazuko main'  | tee $PREFIX/etc/apt/sources.list.d/gushmazuko.list
-
-# Set low priority for all gushmazuko repository (for security purposes)
-# Set highest priority for ruby package from gushmazuko repository
-echo '## Set low priority for all gushmazuko repository (for security purposes)
-Package: *
-Pin: release gushmazuko
-Pin-Priority: 100
-## Set highest priority for ruby package from gushmazuko repository
-Package: ruby
-Pin: release gushmazuko
-Pin-Priority: 1001' | tee $PREFIX/etc/apt/preferences.d/preferences
+# Un Wanted Source Lists
+rm $PREFIX/etc/apt/sources.list.d/*
 
 # Purge installed ruby
 apt purge ruby -y
@@ -116,14 +99,17 @@ gem install actionpack
 bundle update activesupport
 bundle update --bundler
 bundle install -j$(nproc --all)
-$PREFIX/bin/find -type f -executable -exec termux-fix-shebang \{\} \;
-rm ./modules/auxiliary/gather/http_pdf_authors.rb
+
+#$PREFIX/bin/find -type f -executable -exec termux-fix-shebang \{\} \;
+#rm ./modules/auxiliary/gather/http_pdf_authors.rb
+
 if [ -e $PREFIX/bin/msfconsole ];then
 	rm $PREFIX/bin/msfconsole
 fi
 if [ -e $PREFIX/bin/msfvenom ];then
 	rm $PREFIX/bin/msfvenom
 fi
+
 ln -s $HOME/metasploit-framework/msfconsole /data/data/com.termux/files/usr/bin/
 ln -s $HOME/metasploit-framework/msfvenom /data/data/com.termux/files/usr/bin/
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
@@ -136,6 +122,9 @@ echo -e "\033[0m"
 sed -i '355 s/::Exception, //' $PREFIX/bin/msfvenom
 sed -i '481, 483 {s/^/#/}' $PREFIX/bin/msfvenom
 sed -Ei "s/(\^\\\c\s+)/(\^\\\C-\\\s)/" /data/data/com.termux/files/home/metasploit-framework/lib/msf/core/exploit/remote/vim_soap.rb
+
+## Payload Generating Error Fix
+
 sed -i '86 {s/^/#/};96 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.2.0/gems/concurrent-ruby-1.0.5/lib/concurrent/atomic/ruby_thread_local_var.rb
 sed -i '442, 476 {s/^/#/};436, 438 {s/^/#/}' /data/data/com.termux/files/usr/lib/ruby/gems/3.2.0/gems/logging-2.3.0/lib/logging/diagnostic_context.rb
 rm -rf /data/data/com.termux/files/usr/bin/msfvenom

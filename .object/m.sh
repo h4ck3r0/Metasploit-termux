@@ -95,6 +95,7 @@ gem install actionpack
 bundle update activesupport
 bundle update --bundler
 bundle install -j$(nproc --all)
+
 $PREFIX/bin/find -type f -executable -exec termux-fix-shebang \{\} \;
 rm ./modules/auxiliary/gather/http_pdf_authors.rb
 if [ -e $PREFIX/bin/msfconsole ];then
@@ -111,7 +112,7 @@ echo
 echo -e "\033[32m"
 center " Still Fixing....."
 echo -e "\033[0m"
-
+gem install pry
 sed -i '355 s/::Exception, //' $PREFIX/bin/msfvenom
 sed -i '481, 483 {s/^/#/}' $PREFIX/bin/msfvenom
 sed -Ei "s/(\^\\\c\s+)/(\^\\\C-\\\s)/" /data/data/com.termux/files/home/metasploit-framework/lib/msf/core/exploit/remote/vim_soap.rb

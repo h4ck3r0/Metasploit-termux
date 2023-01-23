@@ -136,6 +136,7 @@ pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
 cd;cd metasploit-framework;ln -s $HOME/metasploit-framework/msfvenom /data/data/com.termux/files/usr/bin/
 clear
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
+termux-open-url https://h4ck3r.me/how-to-install-metasploit-in-termux-without-error-2022-by-h4ck3r/
 sleep 5.0
 echo -e "\e[0m"
 clear

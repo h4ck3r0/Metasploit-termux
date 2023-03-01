@@ -78,11 +78,11 @@ echo
 
 #fixed
 
- sed -i "305,\$ s/0.13.1/0.14.1/" Gemfile.lock
+#sed -i "305,\$ s/0.13.1/0.14.1/" Gemfile.lock
 
 gem install bundler
 declare NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
-declare SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
+# declare SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
 # gem install nokogiri --platform=ruby
 # sed 's|nokogiri (1.*)|nokogiri (1.8.0)|g' -i Gemfile.lock
 
@@ -108,6 +108,7 @@ if [ -e $PREFIX/bin/msfvenom ];then
 fi
 ln -s $HOME/metasploit-framework/msfconsole /data/data/com.termux/files/usr/bin/
 ln -s $HOME/metasploit-framework/msfvenom /data/data/com.termux/files/usr/bin/
+ln -s $HOME/metasploit-framework/msfdb $PREFIX/bin/
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
 
 echo

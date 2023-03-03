@@ -21,6 +21,9 @@ echo -e "${RED}░  ░  ░     ░    ░       ░░░ ░ ░ ░░      
 echo -e "${RED}     ░     ░  ░           ░           ${ENDCOLOR}   " 
 sleep 5.0
 
+latestverr(){
+curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/Gemfile.lock -s|grep metasploit-framework|head -1|sed 's/ //g'|sed 's#(# #g;s#)##g;s# #: #g'|awk '{print $2}'
+}
 # Un Wanted Source Lists
 rm $PREFIX/etc/apt/sources.list.d/*
 
@@ -78,15 +81,16 @@ sleep 5.0
 cd $HOME/metasploit-framework
 # Not Need Any More
 
- sed '/rbnacl/d' -i Gemfile.lock
- sed '/rbnacl/d' -i metasploit-framework.gemspec
+# sed '/rbnacl/d' -i Gemfile.lock
+# sed '/rbnacl/d' -i metasploit-framework.gemspec
 
 echo 
 #fixed
 
-sed -i "305,\$ s/0.13.1/0.14.1/" Gemfile.lock
+# sed -i "305,\$ s/0.13.1/0.14.1/" Gemfile.lock
 
 gem install bundler
+
 declare NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
 # gem install nokogiri --platform=ruby
 # sed 's|nokogiri (1.*)|nokogiri (1.8.0)|g' -i Gemfile.lock
@@ -122,9 +126,9 @@ echo -e "\033[32m"
 center " Still Fixing....."
 echo -e "\033[0m"
 
-sed -i '355 s/::Exception, //' $PREFIX/bin/msfvenom
-sed -i '481, 483 {s/^/#/}' $PREFIX/bin/msfvenom
-sed -Ei "s/(\^\\\c\s+)/(\^\\\C-\\\s)/" /data/data/com.termux/files/home/metasploit-framework/lib/msf/core/exploit/remote/vim_soap.rb
+# sed -i '355 s/::Exception, //' $PREFIX/bin/msfvenom
+# sed -i '481, 483 {s/^/#/}' $PREFIX/bin/msfvenom
+# sed -Ei "s/(\^\\\c\s+)/(\^\\\C-\\\s)/" /data/data/com.termux/files/home/metasploit-framework/lib/msf/core/exploit/remote/vim_soap.rb
 
 ## Payload Generating Error Fix
 

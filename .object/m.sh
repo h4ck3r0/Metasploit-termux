@@ -98,6 +98,7 @@ bundle update activesupport
 bundle update --bundler
 bundle install -j$(nproc --all)
 
+bundle install --gemfile /data/data/com.termux/files/home/metasploit-framework/Gemfile
 $PREFIX/bin/find -type f -executable -exec termux-fix-shebang \{\} \;
 rm ./modules/auxiliary/gather/http_pdf_authors.rb
 if [ -e $PREFIX/bin/msfconsole ];then

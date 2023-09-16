@@ -22,9 +22,9 @@ echo -e "${RED}░  ░  ░     ░    ░       ░░░ ░ ░ ░░      
 echo -e "${RED}     ░     ░  ░           ░           ${ENDCOLOR}   " 
 sleep 5.0
 
-latestverr(){
-curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/Gemfile.lock -s|grep metasploit-framework|head -1|sed 's/ //g'|sed 's#(# #g;s#)##g;s# #: #g'|awk '{print $2}'
-}
+#latestverr(){ 
+#curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/Gemfile.lock -s|grep metasploit-framework|head -1|sed 's/ //g'|sed 's#(# #g;s#)##g;s# #: #g'|awk '{print $2}'
+#}
 
 # Purge installed ruby
 apt purge ruby -y

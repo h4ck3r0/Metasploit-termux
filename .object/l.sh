@@ -147,7 +147,7 @@ pg_ctl -D /data/data/com.termux/files/usr/var/lib/postgresql -l logfile start
 termux-elf-cleaner /data/data/com.termux/files/usr/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so
 echo -e "\e[34mINSTALLED SUCCESSFULLY....[\e[92m✓\e[34m]\e[92m"
 
-termux-open-url https://h4ck3r.me/how-to-install-metasploit-in-termux-without-error-2022-by-h4ck3r/
+termux-open-url https://h4ck3r.me/how-to-install-metasploit-in-termux/
 
 sleep 5.0
 echo -e "\e[0m"

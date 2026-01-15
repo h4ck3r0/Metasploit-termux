@@ -1,57 +1,66 @@
-clear
+#!/bin/bash
 
-RED="\e[31m"
-GREEN="\e[32m"
-ENDCOLOR="\e[0m"
+INSTALL_DIR="$HOME/Metasploit-termux"
+OBJECT_DIR="$INSTALL_DIR/.object"
+
+# Colors
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+CYAN='\033[1;36m'
+YELLOW='\033[1;33m'
+RESET='\033[0m'
+
 
 banner() {
+    clear
+    echo -e "${CYAN}---------------------------------------------${RESET}"
+    echo -e "${GREEN}       METASPLOIT VERSION SELECTOR          ${RESET}"
+    echo -e "${CYAN}---------------------------------------------${RESET}"
+    echo -e "${YELLOW}   Author  : Raj Aryan (H4ck3r)            ${RESET}"
+    echo -e "${YELLOW}   YouTube : Youtube.com/c/H4Ck3R0         ${RESET}"
+    echo -e "${CYAN}---------------------------------------------${RESET}"
+    echo ""
+}
 
-echo '
+invalid_input() {
+    echo -e "\n${RED}[!] Invalid Input! Please try again.${RESET}"
+    sleep 1.5
+    menu
+}
 
-░▒█▀▀▀█░█▀▀░█  █▀▀░█▀▄░▀█▀    █░░▒█░█▀▀░█▀▀▄░█▀▀░░▀░░▄▀▀▄░█▀▀▄
-░░▀▀▀▄▄░█▀▀░█░░█▀▀░█░░░ █      █▒█░░█▀▀░█▄▄▀░▀▀▄░░█▀░█░░█░█░▒█
-░▒█▄▄▄█░▀▀▀░▀▀ ▀▀▀░▀▀▀░░▀      ▀▄▀░░▀▀▀░▀░▀▀░▀▀▀░▀▀▀░░▀▀░░▀░░▀
 
-' | lolcat
-echo ""
- echo -e "\e[1;31m  [\e[32m√\e[31m] \e[1;91m by \e[1;36mRaj Aryan \e[93m/ \e[100;92m Youtube.com/c/H4Ck3R0\e[0m"
+install_legacy() {
+    # For Android 4.4 - 6.0
+    echo -e "${GREEN}[*] Initializing Legacy Installation (Android 4.4 - 6.0)...${RESET}"
+    cd "$OBJECT_DIR" || { echo -e "${RED}[!] Directory not found!${RESET}"; exit 1; }
+    bash l.sh
+}
 
-                  }
-wr () {
-           
-                               printf "\033[1;91m Invalid input!!!\n"
-                               selection
-                               }
-                               1line() {
+install_modern() {
+    # For Android 7.0+
+    echo -e "${GREEN}[*] Initializing Modern Installation (Android 7.0+)...${RESET}"
+    cd "$OBJECT_DIR" || { echo -e "${RED}[!] Directory not found!${RESET}"; exit 1; }
+    bash m.sh
+}
 
-                                                        cd ~/Metasploit-termux/.object ; bash l.sh
-                                                        
-                                       }
-                                       2line() {
-                                                cd ~/Metasploit-termux/.object ; bash m.sh
-                                                
-                                               }
-                                                       
-    selection () {
-                                           
-                                            echo -e -n "\e[1;96m Choose\e[1;96m Option : \e[0m"
-                                            cd ~/Metasploit-termux
-                                            read a
-                                            case $a in
-                                            1) 1line ;;
-                                            2) 2line ;;
-                                            3) exit ;;
-                                            *) wr ;;
 
-                                            esac 
-                                            }
 
-  menu () {
-                                  banner
-                                  printf "\n\033[1;91m[\033[0m1\033[1;91m]\033[1;92m metasploit  for  4.4 and 6.0 version \n"
-                                  printf "\033[1;91m[\033[0m2\033[1;91m]\033[1;92m Metasploit  for  7.0 and  above \n"
-                                  printf "\033[1;91m[\033[0m3\033[1;91m]\033[1;92m Exit\n\n\n"
-                                  
-                                  selection
-                                  }
-                  menu
+menu() {
+    banner
+    echo -e "${RED}[${RESET}1${RED}]${GREEN} Metasploit for Android 4.4 - 6.0${RESET}"
+    echo -e "${RED}[${RESET}2${RED}]${GREEN} Metasploit for Android 7.0 +${RESET}"
+    echo -e "${RED}[${RESET}3${RED}]${GREEN} Exit${RESET}"
+    echo ""
+    echo -ne "${CYAN}Choose Option : ${RESET}"
+    
+    read -r option
+    case $option in
+        1) install_legacy ;;
+        2) install_modern ;;
+        3) echo -e "${GREEN}Exiting...${RESET}"; exit 0 ;;
+        *) invalid_input ;;
+    esac
+}
+
+# Start the script
+menu

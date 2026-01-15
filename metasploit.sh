@@ -1,89 +1,100 @@
-pkg install python python2 -y
-pip install lolcat
-clear
+#!/bin/bash
+
+INSTALL_DIR="$HOME/Metasploit-termux"
+OBJECT_DIR="$INSTALL_DIR/.object"
+
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+CYAN='\033[1;36m'
+YELLOW='\033[1;33m'
+RESET='\033[0m'
+
+pkg install python python2 -y > /dev/null 2>&1
 
 banner() {
-echo '
-  .---------------------------------------.  
-  |         ╔╗              ╔╗        ╔╗  |  Give Star
-  |        ╔╝╚╗             ║║       ╔╝╚╗ |  INFO
-  |╔╗╔╗╔══╗╚╗╔╝╔══╗ ╔══╗╔══╗║║ ╔══╗╔╗╚╗╔╝ |  
-  |║╚╝║║╔╗║ ║║ ╚ ╗║ ║══╣║╔╗║║║ ║╔╗║╠╣ ║║  |  I Am Raj Aryan
-  |║║║║║║═╣ ║╚╗║╚╝╚╗╠══║║╚╝║║╚╗║╚╝║║║ ║╚╗ |  18 / Learner
-  |╚╩╩╝╚══╝ ╚═╝╚═══╝╚══╝║╔═╝╚═╝╚══╝╚╝ ╚═╝ |  
-  | ╔╗                  ║║                |  WEBSITES
-  |╔╝╚╗                 ╚╝                |  
-  |╚╗╔╝╔══╗╔═╗╔╗╔╗╔╗╔╗╔╗╔╗ Support US     |  h4ck3r.me
-  | ║║ ║╔╗║║╔╝║╚╝║║║║║╚╬╬╝ Android Version|  explores.social
-  | ║╚╗║║═╣║║ ║║║║║╚╝║╔╬╬╗ 4.4 to latest  |  
-  | ╚═╝╚══╝╚╝ ╚╩╩╝╚══╝╚╝╚╝ @h4ck3r_0      |  Ethical Hacker
-  | by H4ck3r    Madewith♥                |  Programmer
-  .---------------------------------------.                    
-                                                                                                           
-' | lolcat
- echo ""
- echo -e "\e[1;31m  [\e[32m√\e[31m] \e[1;91m by \e[1;36mRaj Aryan \e[93m/ \e[100;92m Youtube.com/c/H4Ck3R0\e[0m"
+    clear
+    echo -e "${CYAN}---------------------------------------------${RESET}"
+    echo -e "${GREEN}       METASPLOIT TERMUX INSTALLER          ${RESET}"
+    echo -e "${CYAN}---------------------------------------------${RESET}"
+    echo -e "${YELLOW}   Author  : Raj Aryan (H4ck3r)            ${RESET}"
+    echo -e "${YELLOW}   YouTube : Youtube.com/c/H4Ck3R0         ${RESET}"
+    echo -e "${CYAN}---------------------------------------------${RESET}"
+    echo ""
+}
 
-                  }
-wr () {
-           
-                               printf "\033[1;91m Invalid input!!!\n"
-                               selection
-                               }
-                               1line() {
-                                        cd ~/Metasploit-termux/.object ; bash ml.sh
-                                        
-                                        
-                                       }
-                                       2line() {
-                                                
-                                                cd ~/Metasploit-termux/.object ; bash r.sh
-                                                cd ~/Metasploit-termux ; bash metasploit.sh
-                                               }
-                                               3line() {
-                                                      
-                                                       cd ~/Metasploit-termux/.object ; bash b.sh                                                      
-                                                       cd ~/Metasploit-termux ; bash metasploit.sh
-                                                       
-                                                         }
-                                                          4line() {
-                                                                  cd ~/Metasploit-termux/.object ; bash re.sh                                                      
-                                                       cd ~/Metasploit-termux ; bash metasploit.sh
-                                                                  cd ~/kali-theme ; bash metasploit.sh
-                                                                  }
-                                                                  5line() {                                                                  
-                                                                            rm -rf ~/Metasploit-termux
-                                                                            cd
-                                                                            git clone https://github.com/h4ck3r0/Metasploit-termux
-                                                                            cd ~/Metasploit-termux ; bash metasploit.sh
-       
-                                                                  }
-    selection () {
-                                           
-                                            echo -e -n "\e[1;96m Choose\e[1;96m Option : \e[0m"
-                                            cd ~/Metasploit-termux
-                                            read a
-                                            case $a in
-                                            1) 1line ;;
-                                            2) 2line ;;
-                                            3) 3line ;;
-                                            4) 4line ;;
-                                            5) 5line  ;;
-                                            6) exit ;;
-                                            *) wr ;;
+invalid_input() {
+    echo -e "\n${RED}[!] Invalid Input! Please try again.${RESET}"
+    sleep 1.5
+    menu
+}
 
-                                            esac 
-                                            }
 
-  menu () {
-                                  banner
-                                  printf "\n\033[1;91m[\033[0m1\033[1;91m]\033[1;92m Metasploit Installation\n"
-                                  printf "\033[1;91m[\033[0m2\033[1;91m]\033[1;92m Repair\n"
-                                  printf "\033[1;91m[\033[0m3\033[1;91m]\033[1;92m Backup\n"
-                                  printf "\033[1;91m[\033[0m4\033[1;91m]\033[1;92m Restore\n"
-                                  printf "\033[1;91m[\033[0m5\033[1;91m]\033[1;92m Update\n"
-                                  printf "\033[1;91m[\033[0m6\033[1;91m]\033[1;92m Exit\n\n\n"
-                                  
-                                  selection
-                                  }
+install_metasploit() {
+    echo -e "${GREEN}[*] Starting Installation...${RESET}"
+    cd "$OBJECT_DIR" || { echo -e "${RED}[!] Directory not found!${RESET}"; exit 1; }
+    bash ml.sh
+}
+
+repair_tool() {
+    echo -e "${GREEN}[*] Repairing Metasploit...${RESET}"
+    cd "$OBJECT_DIR" || exit
+    bash r.sh
+    cd "$INSTALL_DIR" || exit
+    bash metasploit.sh
+}
+
+backup_data() {
+    echo -e "${GREEN}[*] Creating Backup...${RESET}"
+    cd "$OBJECT_DIR" || exit
+    bash b.sh
+    cd "$INSTALL_DIR" || exit
+    bash metasploit.sh
+}
+
+restore_data() {
+    echo -e "${GREEN}[*] Restoring Data...${RESET}"
+    cd "$OBJECT_DIR" || exit
+    bash re.sh
+    cd "$INSTALL_DIR" || exit
+    bash metasploit.sh
+  
+    if [ -d "$HOME/kali-theme" ]; then
+        cd "$HOME/kali-theme" && bash metasploit.sh
+    fi
+}
+
+update_tool() {
+    echo -e "${GREEN}[*] Updating Tool...${RESET}"
+    rm -rf "$INSTALL_DIR"
+    cd "$HOME" || exit
+    git clone https://github.com/h4ck3r0/Metasploit-termux
+    cd "$INSTALL_DIR" || exit
+    bash metasploit.sh
+}
+
+
+menu() {
+    banner
+    echo -e "${RED}[${RESET}1${RED}]${GREEN} Metasploit Installation${RESET}"
+    echo -e "${RED}[${RESET}2${RED}]${GREEN} Repair${RESET}"
+    echo -e "${RED}[${RESET}3${RED}]${GREEN} Backup${RESET}"
+    echo -e "${RED}[${RESET}4${RED}]${GREEN} Restore${RESET}"
+    echo -e "${RED}[${RESET}5${RED}]${GREEN} Update${RESET}"
+    echo -e "${RED}[${RESET}6${RED}]${GREEN} Exit${RESET}"
+    echo ""
+    echo -ne "${CYAN}Choose Option : ${RESET}"
+    
+    read -r option
+    case $option in
+        1) install_metasploit ;;
+        2) repair_tool ;;
+        3) backup_data ;;
+        4) restore_data ;;
+        5) update_tool ;;
+        6) echo -e "${GREEN}Exiting...${RESET}"; exit 0 ;;
+        *) invalid_input ;;
+    esac
+}
+
+# Start the script
 menu

@@ -1,4 +1,3 @@
-```bash
 #!/data/data/com.termux/files/usr/bin/bash
 
 MSF_DIR="$HOME/metasploit-framework"
@@ -128,4 +127,3 @@ echo -e "  Type ${GREEN}msfconsole${RESET} to start."
 echo -e "  Type ${GREEN}msfvenom${RESET} to create payloads."
 echo ""
 
-```

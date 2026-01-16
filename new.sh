@@ -1,62 +1,131 @@
-n#!/data/data/com.termux/files/usr/bin/bash
+```bash
+#!/data/data/com.termux/files/usr/bin/bash
 
-set -e
+MSF_DIR="$HOME/metasploit-framework"
+MSF_URL="https://github.com/rapid7/metasploit-framework.git"
 
-# Colors
-RED="\033[1;31m"
-GREEN="\033[1;32m"
-BLUE="\033[1;34m"
-NC="\033[0m"
+RED="\e[31m"
+GREEN="\e[32m"
+BLUE="\e[34m"
+YELLOW="\e[33m"
+RESET="\e[0m"
 
-center() {
-  termwidth=$(stty size | cut -d" " -f2)
-  padding="$(printf '%0.1s' ={1..500})"
-  printf '%*.*s %s %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
+banner() {
+    clear
+    echo -e "${RED} ███████ ▓█████▄▄▄█████▓ █    ██  ██▓███  " 
+    echo -e "${RED}▒██   ▒ ▓█   ▀▓  ██▒ ▓▒ ██  ▓██▒▓██░  ██▒" 
+    echo -e "${RED}░ ▓██▄   ▒███  ▒ ▓██░ ▒░▓██  ▒██░▓██░ ██▓▒" 
+    echo -e "${RED}  ▒   ██▒▒▓█  ▄░ ▓██▓ ░ ▓▓█  ░██░▒██▄█▓▒ ▒" 
+    echo -e "${RED}▒██████▒▒░▒████▒ ▒██▒ ░ ▒▒█████▓ ▒██▒ ░  ░" 
+    echo -e "${RED}▒ ▒▓▒ ▒ ░░░ ▒░ ░ ▒ ░░   ░▒▓▒ ▒ ▒ ▒▓▒░ ░  ░" 
+    echo -e "${RED}░ ░▒  ░ ░ ░ ░  ░    ░     ░░▒░ ░ ░ ░▒ ░     " 
+    echo -e "${RESET}"
+    echo -e "${BLUE}   >> Metasploit Auto-Fix Installer <<    ${RESET}"
+    echo -e "${BLUE}   ===================================    ${RESET}"
+    echo ""
 }
 
-clear
-echo -e "${BLUE}"
-center "METASPLOIT INSTALLER FOR TERMUX"
-echo -e "${NC}"
-sleep 1
+msg() { echo -e "${BLUE}[*] ${RESET}$1"; }
+success() { echo -e "${GREEN}[✓] $1${RESET}"; }
+error() { echo -e "${RED}[!] $1${RESET}"; exit 1; }
 
-echo -e "${GREEN}[*] Updating Termux...${NC}"
-pkg update -y && pkg upgrade -y
+check_internet() {
+    msg "Checking internet connection..."
+    if ping -q -c 1 -W 1 google.com >/dev/null; then
+        success "Online"
+    else
+        error "No internet. Please connect and try again."
+    fi
+}
 
-echo -e "${GREEN}[*] Installing required packages...${NC}"
-pkg install -y git ruby clang make openssl libxml2 libxslt postgresql readline ncurses autoconf bison curl wget libffi zlib pkg-config libgmp libgrpc libsqlite unzip zip termux-tools
+banner
+check_internet
 
-echo -e "${GREEN}[*] Installing bundler...${NC}"
-gem install bundler --no-document
+msg "Installing build tools & libraries..."
+pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confnew"
 
-echo -e "${GREEN}[*] Cloning Metasploit Framework...${NC}"
-cd ~
-rm -rf metasploit-framework
-git clone https://github.com/rapid7/metasploit-framework.git --depth=1
-cd metasploit-framework
+PACKAGES="git python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils termux-tools termux-elf-cleaner pkg-config ruby libiconv binutils zlib libyaml"
 
-echo -e "${GREEN}[*] Configuring bundle for nokogiri system libraries...${NC}"
-bundle config build.nokogiri "--use-system-libraries --with-xml2-include=$PREFIX/include/libxml2"
+pkg install -y $PACKAGES -o Dpkg::Options::="--force-confnew" || error "Failed to install dependencies"
+success "Dependencies installed"
 
-echo -e "${GREEN}[*] Installing Gems... (This might take 5-15 minutes)${NC}"
-if ! bundle install -j$(nproc --all); then
-  echo -e "${RED}[!] Bundle install failed, attempting fix...${NC}"
-  gem install nokogiri --platform=ruby -- --use-system-libraries
-  bundle install -j1 || { echo -e "${RED}[X] Failed to install bundle dependencies. Exiting.${NC}"; exit 1; }
+if [ -d "$MSF_DIR" ]; then
+    rm -rf "$MSF_DIR"
 fi
 
-echo -e "${GREEN}[*] Fixing shebangs...${NC}"
-find . -type f -executable -exec termux-fix-shebang {} \;
+msg "Downloading Metasploit Framework..."
+git clone --depth=1 "$MSF_URL" "$MSF_DIR" || error "Download failed"
+success "Download complete"
 
-echo -e "${GREEN}[*] Linking binaries...${NC}"
-ln -sf ~/metasploit-framework/msfconsole $PREFIX/bin/
-ln -sf ~/metasploit-framework/msfvenom $PREFIX/bin/
+cd "$MSF_DIR" || error "Could not enter directory"
 
-echo -e "${GREEN}[*] Setting up PostgreSQL...${NC}"
-mkdir -p $PREFIX/var/lib/postgresql
-initdb $PREFIX/var/lib/postgresql
-pg_ctl -D $PREFIX/var/lib/postgresql -l $PREFIX/var/lib/postgresql/logfile start
+export PREFIX="/data/data/com.termux/files/usr"
+export CC="clang"
+export CXX="clang++"
+export CFLAGS="-I$PREFIX/include -I$PREFIX/include/libxml2"
+export CXXFLAGS="-I$PREFIX/include -I$PREFIX/include/libxml2"
+export LDFLAGS="-L$PREFIX/lib"
+export MAKE="make"
 
-echo -e "${BLUE}"
-center "METASPLOIT INSTALLED SUCCESSFULLY"
-echo -e "${GREEN}You can now launch with: msfconsole${NC}"
+gem install bundler
+
+bundle config build.nokogiri --use-system-libraries \
+  --with-xml2-include=$PREFIX/include/libxml2 \
+  --with-xslt-include=$PREFIX/include/libxslt \
+  --with-xml2-lib=$PREFIX/lib \
+  --with-xslt-lib=$PREFIX/lib
+
+bundle config build.pg --with-pg-config=$PREFIX/bin/pg_config
+bundle config build.grpc --with-ldflags="-L$PREFIX/lib" --with-cflags="-I$PREFIX/include"
+
+msg "Running 'bundle install'..."
+bundle config set --local force_ruby_platform true
+bundle install -j$(nproc) || error "Bundle install failed."
+success "Gems installed successfully"
+
+termux-fix-shebang "$MSF_DIR/msfconsole"
+termux-fix-shebang "$MSF_DIR/msfvenom"
+chmod +x "$MSF_DIR/msfconsole"
+chmod +x "$MSF_DIR/msfvenom"
+
+mkdir -p "$PREFIX/var/lib/postgresql"
+
+if ! pg_ctl -D "$PREFIX/var/lib/postgresql" status > /dev/null 2>&1; then
+    if [ ! -d "$PREFIX/var/lib/postgresql/base" ]; then
+        initdb "$PREFIX/var/lib/postgresql" > /dev/null 2>&1
+    fi
+    pg_ctl -D "$PREFIX/var/lib/postgresql" -l "$PREFIX/var/lib/postgresql/logfile" start > /dev/null 2>&1
+fi
+
+if ! createuser -l msf > /dev/null 2>&1; then
+    createdb msf_database -O msf > /dev/null 2>&1
+fi
+
+cat << EOF > "$PREFIX/bin/msfconsole"
+#!/bin/bash
+if ! pgrep -x "postgres" > /dev/null; then
+    pg_ctl -D "\$PREFIX/var/lib/postgresql" -l "\$PREFIX/var/lib/postgresql/logfile" start
+fi
+cd "$MSF_DIR"
+./msfconsole "\$@"
+EOF
+
+cat << EOF > "$PREFIX/bin/msfvenom"
+#!/bin/bash
+cd "$MSF_DIR"
+./msfvenom "\$@"
+EOF
+
+chmod +x "$PREFIX/bin/msfconsole"
+chmod +x "$PREFIX/bin/msfvenom"
+
+termux-elf-cleaner "$PREFIX/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so" > /dev/null 2>&1
+
+banner
+echo -e "${GREEN}Installation & Fixes Complete!${RESET}"
+echo -e "${YELLOW}Usage:${RESET}"
+echo -e "  Type ${GREEN}msfconsole${RESET} to start."
+echo -e "  Type ${GREEN}msfvenom${RESET} to create payloads."
+echo ""
+
+```

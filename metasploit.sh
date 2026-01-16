@@ -16,8 +16,10 @@ banner() {
     echo -e "${CYAN}---------------------------------------------${RESET}"
     echo -e "${GREEN}       METASPLOIT TERMUX INSTALLER          ${RESET}"
     echo -e "${CYAN}---------------------------------------------${RESET}"
-    echo -e "${YELLOW}   Author  : Raj Aryan (H4ck3r)            ${RESET}"
-    echo -e "${YELLOW}   YouTube : Youtube.com/c/H4Ck3R0         ${RESET}"
+    echo -e "${YELLOW}  Author  : Raj Aryan (h4ck3r0)${RESET}"
+    echo -e "${YELLOW}  GitHub  : github.com/h4ck3r0/Metasploit-termux${RESET}"
+    echo -e "${YELLOW}  YouTube : Youtube.com/c/H4Ck3R0${RESET}"
+    echo -e "${YELLOW}  Website : h4ck3r.me${RESET}"
     echo -e "${CYAN}---------------------------------------------${RESET}"
     echo ""
 }

@@ -2,6 +2,7 @@
 
 MSF_DIR="$HOME/metasploit-framework"
 MSF_URL="https://github.com/rapid7/metasploit-framework.git"
+PREFIX="/data/data/com.termux/files/usr"
 
 RED="\e[31m"
 GREEN="\e[32m"
@@ -17,93 +18,52 @@ banner() {
     echo -e "${RED}  ▒   ██▒▒▓█  ▄░ ▓██▓ ░ ▓▓█  ░██░▒██▄█▓▒ ▒" 
     echo -e "${RED}▒██████▒▒░▒████▒ ▒██▒ ░ ▒▒█████▓ ▒██▒ ░  ░" 
     echo -e "${RED}▒ ▒▓▒ ▒ ░░░ ▒░ ░ ▒ ░░   ░▒▓▒ ▒ ▒ ▒▓▒░ ░  ░" 
-    echo -e "${RED}░ ░▒  ░ ░ ░ ░  ░    ░     ░░▒░ ░ ░ ░▒ ░     " 
-    echo -e "${RESET}"
-    echo -e "${BLUE}   >> Metasploit Auto-Fix Installer <<    ${RESET}"
-    echo -e "${BLUE}   ===================================    ${RESET}"
-    echo ""
-}
-
-msg() { echo -e "${BLUE}[*] ${RESET}$1"; }
-success() { echo -e "${GREEN}[✓] $1${RESET}"; }
-error() { echo -e "${RED}[!] $1${RESET}"; exit 1; }
-
-check_internet() {
-    msg "Checking internet connection..."
-    if ping -q -c 1 -W 1 google.com >/dev/null; then
-        success "Online"
-    else
-        error "No internet. Please connect and try again."
-    fi
+    echo -e "${RED}░ ░▒  ░ ░ ░ ░  ░    ░     ░░▒░ ░ ░ ░▒ ░     ${RESET}"
+    echo -e "${BLUE}   >> Metasploit Final Fix (Ruby 3.4) <<    ${RESET}"
 }
 
 banner
-check_internet
-
-msg "Installing build tools & libraries..."
 pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confnew"
+pkg install -y git python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils termux-tools termux-elf-cleaner pkg-config ruby libiconv binutils zlib libyaml
 
-PACKAGES="git python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils termux-tools termux-elf-cleaner pkg-config ruby libiconv binutils zlib libyaml"
-
-pkg install -y $PACKAGES -o Dpkg::Options::="--force-confnew" || error "Failed to install dependencies"
-success "Dependencies installed"
-
-if [ -d "$MSF_DIR" ]; then
-    rm -rf "$MSF_DIR"
+if [ ! -d "$MSF_DIR" ]; then
+    git clone --depth=1 "$MSF_URL" "$MSF_DIR"
 fi
 
-msg "Downloading Metasploit Framework..."
-git clone --depth=1 "$MSF_URL" "$MSF_DIR" || error "Download failed"
-success "Download complete"
-
-cd "$MSF_DIR" || error "Could not enter directory"
-
-export PREFIX="/data/data/com.termux/files/usr"
 export CC="clang"
 export CXX="clang++"
 export CFLAGS="-I$PREFIX/include -I$PREFIX/include/libxml2"
-export CXXFLAGS="-I$PREFIX/include -I$PREFIX/include/libxml2"
 export LDFLAGS="-L$PREFIX/lib"
-export MAKE="make"
-
 gem install bundler
 
-bundle config build.nokogiri --use-system-libraries \
-  --with-xml2-include=$PREFIX/include/libxml2 \
-  --with-xslt-include=$PREFIX/include/libxslt \
-  --with-xml2-lib=$PREFIX/lib \
-  --with-xslt-lib=$PREFIX/lib
+cd $HOME
+NOKO_VERSION=$(grep -A 1 "nokogiri (" "$MSF_DIR/Gemfile.lock" | tail -n 1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+gem fetch nokogiri -v "$NOKO_VERSION"
+gem unpack nokogiri-"$NOKO_VERSION".gem
+cd nokogiri-"$NOKO_VERSION"/ext/nokogiri
 
-bundle config build.pg --with-pg-config=$PREFIX/bin/pg_config
-bundle config build.grpc --with-ldflags="-L$PREFIX/lib" --with-cflags="-I$PREFIX/include"
+curl -Lo "$PREFIX/include/nokogiri_gumbo.h" https://raw.githubusercontent.com/sparklemotion/nokogiri/main/ext/nokogiri/nokogiri_gumbo.h
 
-msg "Running 'bundle install'..."
+ruby extconf.rb --use-system-libraries --with-cflags="-Wno-implicit-function-declaration -I$PREFIX/include"
+make -j$(nproc)
+make install
+
+cd "$MSF_DIR"
 bundle config set --local force_ruby_platform true
-bundle install -j$(nproc) || error "Bundle install failed."
-success "Gems installed successfully"
-
-termux-fix-shebang "$MSF_DIR/msfconsole"
-termux-fix-shebang "$MSF_DIR/msfvenom"
-chmod +x "$MSF_DIR/msfconsole"
-chmod +x "$MSF_DIR/msfvenom"
+bundle config build.nokogiri --use-system-libraries
+bundle config build.pg --with-pg-config=$PREFIX/bin/pg_config
+bundle install -j$(nproc)
 
 mkdir -p "$PREFIX/var/lib/postgresql"
-
-if ! pg_ctl -D "$PREFIX/var/lib/postgresql" status > /dev/null 2>&1; then
-    if [ ! -d "$PREFIX/var/lib/postgresql/base" ]; then
-        initdb "$PREFIX/var/lib/postgresql" > /dev/null 2>&1
-    fi
-    pg_ctl -D "$PREFIX/var/lib/postgresql" -l "$PREFIX/var/lib/postgresql/logfile" start > /dev/null 2>&1
+if [ ! -d "$PREFIX/var/lib/postgresql/base" ]; then
+    initdb "$PREFIX/var/lib/postgresql"
 fi
-
-if ! createuser -l msf > /dev/null 2>&1; then
-    createdb msf_database -O msf > /dev/null 2>&1
-fi
+pg_ctl -D "$PREFIX/var/lib/postgresql" -l "$PREFIX/var/lib/postgresql/logfile" start 2>/dev/null
 
 cat << EOF > "$PREFIX/bin/msfconsole"
 #!/bin/bash
 if ! pgrep -x "postgres" > /dev/null; then
-    pg_ctl -D "\$PREFIX/var/lib/postgresql" -l "\$PREFIX/var/lib/postgresql/logfile" start
+    pg_ctl -D "$PREFIX/var/lib/postgresql" -l "$PREFIX/var/lib/postgresql/logfile" start
 fi
 cd "$MSF_DIR"
 ./msfconsole "\$@"
@@ -115,15 +75,14 @@ cd "$MSF_DIR"
 ./msfvenom "\$@"
 EOF
 
-chmod +x "$PREFIX/bin/msfconsole"
-chmod +x "$PREFIX/bin/msfvenom"
-
+chmod +x "$PREFIX/bin/msfconsole" "$PREFIX/bin/msfvenom"
 termux-elf-cleaner "$PREFIX/lib/ruby/gems/*/gems/pg-*/lib/pg_ext.so" > /dev/null 2>&1
 
-banner
-echo -e "${GREEN}Installation & Fixes Complete!${RESET}"
-echo -e "${YELLOW}Usage:${RESET}"
-echo -e "  Type ${GREEN}msfconsole${RESET} to start."
-echo -e "  Type ${GREEN}msfvenom${RESET} to create payloads."
-echo ""
+cd $HOME
+rm -rf nokogiri-"$NOKO_VERSION"
+rm -f nokogiri-"$NOKO_VERSION".gem
+rm -f "$PREFIX/include/nokogiri_gumbo.h"
 
+banner
+echo -e "${GREEN}[✓] Metasploit Installed & Cleaned!${RESET}"
+echo -e "${YELLOW}Start with: ${GREEN}msfconsole${RESET}"

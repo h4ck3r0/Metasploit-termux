@@ -44,8 +44,7 @@ banner() {
     echo -e "${YELLOW}  YouTube : Youtube.com/c/H4Ck3R0${RESET}"
     echo -e "${YELLOW}  Website : h4ck3r.me${RESET}"
     echo -e "${BLUE} ####################################################${RESET}"
-    echo -e "${CYAN}  Note: Installation logs are saved in ~/install.log${RESET}"
-    echo ""
+    echo -e "${CYAN}  Logs: ~/install.log${RESET}\n"
 }
 
 run_task() {
@@ -63,7 +62,7 @@ run_task() {
 
 install_deps() {
     run_task "Updating system packages" "pkg update -y && pkg upgrade -y"
-    run_task "Installing core dependencies" "
+    run_task "Installing dependencies" "
         pkg install -y git python autoconf bison clang coreutils curl findutils \
         apr apr-util postgresql openssl readline libffi libgmp libpcap \
         libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils \
@@ -72,28 +71,34 @@ install_deps() {
     "
 }
 
-# 🔧 FIXED Nokogiri handling (Gumbo disabled safely)
+# 🔥 FIXED Nokogiri (no Gumbo compilation)
 manual_nokogiri_fix() {
     cd $HOME
 
-    NOKO_VERSION=$(grep -E "^\s+nokogiri \(" "$MSF_DIR/Gemfile.lock" | head -n 1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    NOKO_VERSION="1.18.10"
 
-    if [ -z "$NOKO_VERSION" ] || [ "$NOKO_VERSION" = "1.8.5" ]; then
-        NOKO_VERSION="1.18.10"
-    fi
+    run_task "Fixing Nokogiri (Gumbo removed)" "
+        rm -rf ~/.gem/gems/nokogiri* &&
+        rm -rf ~/.gem/extensions/* &&
+        rm -rf ~/.bundle &&
 
-    run_task "Fixing Nokogiri (v$NOKO_VERSION)" "
         gem update --system &&
         gem install mini_portile2 -v 2.8.5 &&
+
         gem install nokogiri -v $NOKO_VERSION -- \
-            --use-system-libraries \
-            --disable-gumbo
+          --use-system-libraries \
+          --disable-gumbo \
+          --with-xml2-include=$PREFIX/include/libxml2 \
+          --with-xml2-lib=$PREFIX/lib
+
+        rm -rf ~/.gem/gems/nokogiri-$NOKO_VERSION/ext/nokogiri/gumbo*
     "
 }
 
 install_msf() {
     if [ ! -d "$MSF_DIR" ]; then
-        run_task "Cloning Metasploit Framework" "git clone --depth=1 $MSF_URL $MSF_DIR"
+        run_task "Cloning Metasploit Framework" \
+        "git clone --depth=1 $MSF_URL $MSF_DIR"
     fi
 
     cd "$MSF_DIR"
@@ -104,15 +109,16 @@ install_msf() {
 
     run_task "Configuring Bundle settings" "
         bundle config set --local force_ruby_platform true &&
-        bundle config set build.nokogiri '--use-system-libraries --disable-gumbo' &&
+        bundle config set build.nokogiri '--use-system-libraries --with-xml2-include=$PREFIX/include/libxml2 --with-xml2-lib=$PREFIX/lib' &&
         bundle config set build.pg --with-pg-config=$PREFIX/bin/pg_config
     "
 
-    run_task "Installing Framework Gems (Wait...)" "bundle install -j\$(nproc)"
+    run_task "Installing Framework Gems (Wait...)" \
+    "bundle install -j\$(nproc)"
 }
 
 setup_binaries() {
-    run_task "Initializing Database and Shortcuts" "
+    run_task "Setting up PostgreSQL & shortcuts" "
         mkdir -p $PG_DATA &&
         [ ! -d $PG_DATA/base ] && initdb $PG_DATA;
 
@@ -136,8 +142,10 @@ cd \"$MSF_DIR\"
 }
 
 cleanup() {
-    run_task "Performing Final Cleanup" "
-        rm -rf ~/.gem/gems/nokogiri* ~/.gem/extensions/*
+    run_task "Final Cleanup" "
+        rm -rf ~/.gem/gems/nokogiri* &&
+        rm -rf ~/.gem/extensions/* &&
+        rm -rf ~/.bundle
     "
 }
 

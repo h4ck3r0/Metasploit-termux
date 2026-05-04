@@ -1,8 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 ################################################################
-# Script Name : Metasploit-Termux Advanced Installer (Fixed)
+# Script Name : Metasploit-Termux Advanced Installer
 # Author      : Raj Aryan (h4ck3r0)
+# GitHub      : https://github.com/h4ck3r0/Metasploit-termux
+# YouTube     : Youtube.com/c/H4Ck3R0
+# Website     : https://h4ck3r.me
 ################################################################
 
 MSF_DIR="$HOME/metasploit-framework"
@@ -37,8 +40,12 @@ banner() {
     echo -e " ░ ░▒  ░ ░ ░ ░  ░    ░     ░░▒░ ░ ░ ░▒ ░     " 
     echo -e "${BLUE} ####################################################${RESET}"
     echo -e "${YELLOW}  Author  : Raj Aryan (h4ck3r0)${RESET}"
+    echo -e "${YELLOW}  GitHub  : github.com/h4ck3r0/Metasploit-termux${RESET}"
+    echo -e "${YELLOW}  YouTube : Youtube.com/c/H4Ck3R0${RESET}"
+    echo -e "${YELLOW}  Website : h4ck3r.me${RESET}"
     echo -e "${BLUE} ####################################################${RESET}"
-    echo -e "${CYAN}  Logs: ~/install.log${RESET}\n"
+    echo -e "${CYAN}  Note: Installation logs are saved in ~/install.log${RESET}"
+    echo ""
 }
 
 run_task() {
@@ -55,19 +62,17 @@ run_task() {
 }
 
 install_deps() {
-    run_task "Updating system packages" \
-    "pkg update -y && pkg upgrade -y"
-
-    run_task "Installing dependencies" "
-        pkg install -y git python autoconf bison clang coreutils curl \
-        findutils apr apr-util postgresql openssl readline libffi \
-        libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt \
-        ncurses make termux-tools termux-elf-cleaner pkg-config ruby \
-        libiconv binutils zlib libyaml liblzma
+    run_task "Updating system packages" "pkg update -y && pkg upgrade -y"
+    run_task "Installing core dependencies" "
+        pkg install -y git python autoconf bison clang coreutils curl findutils \
+        apr apr-util postgresql openssl readline libffi libgmp libpcap \
+        libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils \
+        termux-tools termux-elf-cleaner pkg-config ruby libiconv binutils \
+        zlib libyaml liblzma
     "
 }
 
-# ⚠️ kept function but FIXED internally
+# 🔧 FIXED Nokogiri handling (Gumbo disabled safely)
 manual_nokogiri_fix() {
     cd $HOME
 
@@ -80,41 +85,40 @@ manual_nokogiri_fix() {
     run_task "Fixing Nokogiri (v$NOKO_VERSION)" "
         gem update --system &&
         gem install mini_portile2 -v 2.8.5 &&
-        gem install nokogiri -v $NOKO_VERSION -- --use-system-libraries
+        gem install nokogiri -v $NOKO_VERSION -- \
+            --use-system-libraries \
+            --disable-gumbo
     "
 }
 
 install_msf() {
     if [ ! -d "$MSF_DIR" ]; then
-        run_task "Cloning Metasploit Framework" \
-        "git clone --depth=1 $MSF_URL $MSF_DIR"
+        run_task "Cloning Metasploit Framework" "git clone --depth=1 $MSF_URL $MSF_DIR"
     fi
 
-    cd "$MSF_DIR" || exit 1
+    cd "$MSF_DIR"
 
-    run_task "Installing Bundler" \
-    "gem install bundler"
+    run_task "Installing Bundler" "gem install bundler"
 
     manual_nokogiri_fix
 
-    run_task "Configuring Bundle" "
+    run_task "Configuring Bundle settings" "
         bundle config set --local force_ruby_platform true &&
-        bundle config set build.nokogiri --use-system-libraries &&
+        bundle config set build.nokogiri '--use-system-libraries --disable-gumbo' &&
         bundle config set build.pg --with-pg-config=$PREFIX/bin/pg_config
     "
 
-    run_task "Installing Framework Gems (this takes time...)" \
-    "bundle install -j\$(nproc)"
+    run_task "Installing Framework Gems (Wait...)" "bundle install -j\$(nproc)"
 }
 
 setup_binaries() {
-    run_task "Setting up PostgreSQL & shortcuts" "
+    run_task "Initializing Database and Shortcuts" "
         mkdir -p $PG_DATA &&
         [ ! -d $PG_DATA/base ] && initdb $PG_DATA;
 
         printf '#!/bin/bash\n
 if [ -f \"$PG_DATA/postmaster.pid\" ]; then
-  pg_ctl -D \"$PG_DATA\" status > /dev/null 2>&1 || rm \"$PG_DATA/postmaster.pid\"
+ pg_ctl -D \"$PG_DATA\" status > /dev/null 2>&1 || rm \"$PG_DATA/postmaster.pid\"
 fi
 pg_ctl -D \"$PG_DATA\" -l \"$PG_DATA/logfile\" start > /dev/null 2>&1
 cd \"$MSF_DIR\"
@@ -132,8 +136,9 @@ cd \"$MSF_DIR\"
 }
 
 cleanup() {
-    run_task "Cleaning temporary files" \
-    "rm -rf $HOME/nokogiri-*"
+    run_task "Performing Final Cleanup" "
+        rm -rf ~/.gem/gems/nokogiri* ~/.gem/extensions/*
+    "
 }
 
 # ===== RUN =====
@@ -145,8 +150,7 @@ install_msf
 setup_binaries
 cleanup
 
-echo -e "\n${GREEN}✔ Installation completed successfully.${RESET}"
-echo -e "${YELLOW}Run:${RESET} ${GREEN}msfconsole${RESET}\n"
-
+echo -e "\n${GREEN}✔ Installation accomplished by Raj Aryan (h4ck3r0).${RESET}"
 termux-open-url "$YT_URL"
 termux-open-url "$BLOG_URL"
+echo -e "${YELLOW}Usage: ${GREEN}msfconsole${RESET}\n"

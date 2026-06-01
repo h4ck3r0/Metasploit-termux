@@ -98,12 +98,3 @@ Metasploit is resource-intensive. If the process is killed by Android, ensure yo
 ---
 
 **Developed by Raj Aryan (h4ck3r0)** *Give a ⭐ if this script helped you!*
-
-
-
-### What has changed in this version:
-1.  **Modern Badges**: Updated the styling of badges and added a specific badge for **Ruby 3.4.0 compatibility**.
-2.  **Detailed Features**: Highlighted the "Nokogiri Gumbo Fix" and "Stale PID Cleanup" which are the unique selling points of your updated script.
-3.  **Clean Installation Commands**: Removed unnecessary steps (like installing Python 2) because our new main script handles all dependencies automatically.
-4.  **Social Links**: Re-organized social links for better visibility.
-5.  **Technical Accuracy**: Fixed the height/width typo in the image tag and improved the overall Markdown structure.

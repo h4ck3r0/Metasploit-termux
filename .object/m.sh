@@ -75,24 +75,32 @@ install_deps() {
 manual_nokogiri_fix() {
     cd $HOME
 
-    NOKO_VERSION="1.18.10"
+    local NOKO_VERSION="1.18.10"
 
-    run_task "Fixing Nokogiri (Gumbo removed)" "
+    # Clear only old broken nokogiri — do NOT delete .bundle here
+    run_task "Clearing old Nokogiri cache" "
         rm -rf ~/.gem/gems/nokogiri* &&
-        rm -rf ~/.gem/extensions/* &&
-        rm -rf ~/.bundle &&
-
-        gem update --system &&
-        gem install mini_portile2 -v 2.8.5 &&
-
-        gem install nokogiri -v $NOKO_VERSION -- \
-          --use-system-libraries \
-          --disable-gumbo \
-          --with-xml2-include=$PREFIX/include/libxml2 \
-          --with-xml2-lib=$PREFIX/lib
-
-        rm -rf ~/.gem/gems/nokogiri-$NOKO_VERSION/ext/nokogiri/gumbo*
+        rm -rf ~/.gem/extensions/*
     "
+
+    # Non-fatal: some Termux builds restrict gem system updates
+    echo -ne "${YELLOW}[...]${RESET} Updating RubyGems (non-fatal)"
+    gem update --system >> "$LOG_FILE" 2>&1 && \
+        echo -e "\r${GREEN}[DONE]${RESET} Updating RubyGems (non-fatal)" || \
+        echo -e "\r${YELLOW}[SKIP]${RESET} RubyGems update skipped (continuing anyway)"
+
+    run_task "Installing mini_portile2" "gem install mini_portile2 -v 2.8.5"
+
+    # BUG FIX: double quotes so ${PREFIX} expands — single quotes prevent expansion
+    run_task "Installing Nokogiri ${NOKO_VERSION} (Gumbo disabled)" "
+        gem install nokogiri -v ${NOKO_VERSION} -- \\
+          --use-system-libraries \\
+          --disable-gumbo \\
+          --with-xml2-include=${PREFIX}/include/libxml2 \\
+          --with-xml2-lib=${PREFIX}/lib
+    "
+
+    rm -rf ~/.gem/gems/nokogiri-${NOKO_VERSION}/ext/nokogiri/gumbo* 2>/dev/null || true
 }
 
 install_msf() {
@@ -107,10 +115,11 @@ install_msf() {
 
     manual_nokogiri_fix
 
+    # BUG FIX: double quotes so ${PREFIX} expands — single quotes prevent variable expansion
     run_task "Configuring Bundle settings" "
         bundle config set --local force_ruby_platform true &&
-        bundle config set build.nokogiri '--use-system-libraries --with-xml2-include=$PREFIX/include/libxml2 --with-xml2-lib=$PREFIX/lib' &&
-        bundle config set build.pg --with-pg-config=$PREFIX/bin/pg_config
+        bundle config set build.nokogiri \"--use-system-libraries --disable-gumbo --with-xml2-include=${PREFIX}/include/libxml2 --with-xml2-lib=${PREFIX}/lib\" &&
+        bundle config set build.pg --with-pg-config=${PREFIX}/bin/pg_config
     "
 
     run_task "Installing Framework Gems (Wait...)" \
@@ -142,10 +151,10 @@ cd \"$MSF_DIR\"
 }
 
 cleanup() {
+    # BUG FIX: Do NOT delete nokogiri gems or extensions — they are needed
+    # at runtime by msfconsole. Only clean build-time temp/cache files.
     run_task "Final Cleanup" "
-        rm -rf ~/.gem/gems/nokogiri* &&
-        rm -rf ~/.gem/extensions/* &&
-        rm -rf ~/.bundle
+        gem cleanup 2>/dev/null || true
     "
 }
 

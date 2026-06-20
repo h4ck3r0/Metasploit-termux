@@ -43,13 +43,20 @@ install_modern() {
     bash m.sh
 }
 
+install_proot() {
+    # Proot-distro + Debian (Recommended - Most Stable)
+    echo -e "${GREEN}[*] Initializing Proot-Distro Installation (Debian - Recommended)...${RESET}"
+    cd "$OBJECT_DIR" || { echo -e "${RED}[!] Directory not found!${RESET}"; exit 1; }
+    bash proot.sh
+}
 
 
 menu() {
     banner
-    echo -e "${RED}[${RESET}1${RED}]${GREEN} Metasploit for Android 4.4 - 6.0${RESET}"
-    echo -e "${RED}[${RESET}2${RED}]${GREEN} Metasploit for Android 7.0 +${RESET}"
-    echo -e "${RED}[${RESET}3${RED}]${GREEN} Exit${RESET}"
+    echo -e "${RED}[${RESET}1${RED}]${GREEN} Metasploit for Android 4.4 - 6.0 (Legacy)${RESET}"
+    echo -e "${RED}[${RESET}2${RED}]${GREEN} Metasploit for Android 7.0+ (Direct)${RESET}"
+    echo -e "${RED}[${RESET}3${RED}]${GREEN} Metasploit via Proot-Distro / Debian ${YELLOW}[RECOMMENDED]${RESET}"
+    echo -e "${RED}[${RESET}4${RED}]${GREEN} Exit${RESET}"
     echo ""
     echo -ne "${CYAN}Choose Option : ${RESET}"
     
@@ -57,7 +64,8 @@ menu() {
     case $option in
         1) install_legacy ;;
         2) install_modern ;;
-        3) echo -e "${GREEN}Exiting...${RESET}"; exit 0 ;;
+        3) install_proot ;;
+        4) echo -e "${GREEN}Exiting...${RESET}"; exit 0 ;;
         *) invalid_input ;;
     esac
 }

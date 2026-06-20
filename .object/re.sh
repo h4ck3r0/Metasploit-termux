@@ -1,20 +1,21 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 
+################################################################
+# Script Name : Metasploit Restore
+# Author      : Raj Aryan (h4ck3r0)
+# GitHub      : https://github.com/h4ck3r0/Metasploit-termux
+################################################################
 
-HOME_DIR="$HOME"
-MSF_DIR="$HOME_DIR/metasploit-framework"
-BACKUP_SOURCE="/sdcard/backup"
-TEMP_BACKUP_DIR="$HOME_DIR/backup"
-INSTALLER_DIR="$HOME_DIR/Metasploit-termux"
+MSF_DIR="$HOME/metasploit-framework"
+SDCARD="/sdcard"
+BACKUP_DIR="$SDCARD/MSF/backups"
+INSTALLER_DIR="$HOME/Metasploit-termux"
 
-# Colors
-RED='\033[1;31m'
-GREEN='\033[1;32m'
-CYAN='\033[1;36m'
-YELLOW='\033[1;33m'
-RESET='\033[0m'
-
-
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+CYAN="\e[36m"
+RESET="\e[0m"
 
 banner() {
     clear
@@ -27,51 +28,86 @@ banner() {
     echo ""
 }
 
-start_restore() {
-    banner
-    
-    if [ -d "$MSF_DIR" ]; then
-        echo -e "${YELLOW}[!] Metasploit is already present in Termux.${RESET}"
-        echo -e "${RED}    Please remove the existing installation before restoring.${RESET}"
-        echo ""
-        exit 1
-    fi
+banner
 
-    echo -e "${GREEN}[*] Requesting storage access...${RESET}"
+# ── Check storage access ──────────────────────
+if [ ! -d "$SDCARD" ]; then
+    echo -e "${YELLOW}[*] Requesting storage permission...${RESET}"
     termux-setup-storage
-    sleep 1
+    sleep 3
+fi
 
-    if [ ! -d "$BACKUP_SOURCE" ]; then
-        echo -e "${RED}[!] No backup found at ${BACKUP_SOURCE}${RESET}"
-        echo -e "${YELLOW}    Please ensure 'backup' folder exists on your internal storage.${RESET}"
-        exit 1
+# ── Check backup folder exists ────────────────
+if [ ! -d "$BACKUP_DIR" ]; then
+    echo -e "${RED}[!] No backup folder found at: ${BACKUP_DIR}${RESET}"
+    echo -e "${YELLOW}    Please create a backup first using Option 3.${RESET}"
+    exit 1
+fi
+
+# ── List available backups ────────────────────
+mapfile -t BACKUPS < <(ls -1 "$BACKUP_DIR" | grep -v "_gems$" | sort -r)
+
+if [ ${#BACKUPS[@]} -eq 0 ]; then
+    echo -e "${RED}[!] No backups found in ${BACKUP_DIR}${RESET}"
+    exit 1
+fi
+
+echo -e "${CYAN}Available backups (newest first):${RESET}\n"
+for i in "${!BACKUPS[@]}"; do
+    echo -e "  ${RED}[$((i+1))]${GREEN} ${BACKUPS[$i]}${RESET}"
+done
+
+echo ""
+echo -ne "${CYAN}Choose backup to restore (or 0 to cancel): ${RESET}"
+read -r choice
+
+if [ "$choice" = "0" ] || [ -z "$choice" ]; then
+    echo -e "${YELLOW}[!] Cancelled.${RESET}"
+    exit 0
+fi
+
+# Validate input
+if ! [[ "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 1 ] || [ "$choice" -gt "${#BACKUPS[@]}" ]; then
+    echo -e "${RED}[!] Invalid selection.${RESET}"
+    exit 1
+fi
+
+SELECTED="${BACKUPS[$((choice-1))]}"
+BACKUP_SOURCE="$BACKUP_DIR/$SELECTED"
+
+echo -e "\n${YELLOW}[*] Selected: ${CYAN}$SELECTED${RESET}"
+
+# ── Warn if MSF already installed ────────────
+if [ -d "$MSF_DIR" ]; then
+    echo -e "${YELLOW}[!] Existing Metasploit installation found.${RESET}"
+    echo -ne "${RED}    Overwrite it? (y/N): ${RESET}"
+    read -r confirm
+    if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+        echo -e "${YELLOW}[!] Restore cancelled.${RESET}"
+        exit 0
+    fi
+    rm -rf "$MSF_DIR"
+fi
+
+# ── Restore ───────────────────────────────────
+echo -e "${GREEN}[*] Restoring from backup... (this may take a while)${RESET}"
+
+cp -r "$BACKUP_SOURCE" "$MSF_DIR"
+
+if [ $? -eq 0 ]; then
+    # Restore gems if gem backup exists
+    GEMS_BACKUP="$BACKUP_DIR/${SELECTED}_gems"
+    if [ -d "$GEMS_BACKUP" ] && [ ! -d "$HOME/.gem" ]; then
+        echo -e "${GREEN}[*] Restoring gem data...${RESET}"
+        cp -r "$GEMS_BACKUP" "$HOME/.gem" 2>/dev/null || true
     fi
 
-    echo -e "${GREEN}[*] Restoring data from storage...${RESET}"
-    echo -e "${CYAN}    This may take some time. Please wait.${RESET}"
+    echo -e "\n${GREEN}[✓] Restore successful!${RESET}"
+    echo -e "${CYAN}    Run: ${GREEN}msfconsole${CYAN} to start Metasploit${RESET}\n"
+else
+    echo -e "${RED}[!] Restore failed. Could not copy files.${RESET}"
+    exit 1
+fi
 
-    rm -rf "$TEMP_BACKUP_DIR"
-
-    cp -r "$BACKUP_SOURCE" "$HOME_DIR/" || {
-        echo -e "${RED}[!] Failed to copy backup files.${RESET}"
-        exit 1
-    }
-
-    if [ -d "$TEMP_BACKUP_DIR/metasploit-framework" ]; then
-        mv "$TEMP_BACKUP_DIR/metasploit-framework" "$HOME_DIR/"
-        rm -rf "$TEMP_BACKUP_DIR" # Clean up temp folder
-        echo -e "${GREEN}[✓] Restore successful!${RESET}"
-        
-        # Return to main menu
-        if [ -d "$INSTALLER_DIR" ]; then
-            cd "$INSTALLER_DIR"
-            bash metasploit.sh
-        fi
-    else
-        echo -e "${RED}[!] Restore failed: Invalid backup structure.${RESET}"
-        echo -e "${YELLOW}    Ensure the backup folder contains 'metasploit-framework'.${RESET}"
-        exit 1
-    fi
-}
-
-start_restore
+sleep 2
+cd "$INSTALLER_DIR" && bash metasploit.sh

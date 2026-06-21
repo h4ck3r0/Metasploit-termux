@@ -139,8 +139,10 @@ update_tool() {
     fi
 
     # ── 4. Offer MSF update inside Debian (proot method) ────────────
-    local ROOTFS="$HOME/proot-distro/installed-rootfs/debian"
-    if [ -d "$ROOTFS" ] && [ -f "$ROOTFS/etc/debian_version" ]; then
+    local ROOTFS_NEW="$PREFIX/var/lib/proot-distro/installed-rootfs/debian"
+    local ROOTFS_OLD="$HOME/proot-distro/installed-rootfs/debian"
+    if [ -f "$ROOTFS_NEW/etc/debian_version" ] || [ -f "$ROOTFS_OLD/etc/debian_version" ] || \
+       proot-distro login debian -- true 2>/dev/null; then
         echo ""
         echo -ne "${CYAN}[?]${RESET} Update Metasploit inside Debian proot? (y/N): "
         read -r msf_update

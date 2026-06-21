@@ -121,10 +121,16 @@ install_proot() {
 install_debian() {
     echo -e "\n${BOLD}${CYAN}[STEP 3]${RESET} Installing Debian (lightweight)...\n"
 
-    # Check rootfs directory directly — more reliable than parsing proot-distro list output
-    local ROOTFS="$HOME/proot-distro/installed-rootfs/$DISTRO"
-    if [ -d "$ROOTFS" ] && [ -f "$ROOTFS/etc/debian_version" ]; then
+    # proot-distro 5.x stores rootfs at $PREFIX/var/lib/proot-distro/installed-rootfs/
+    # Older versions used $HOME/proot-distro/installed-rootfs/
+    # Check both paths, then fallback to a login test
+    local ROOTFS_NEW="$PREFIX/var/lib/proot-distro/installed-rootfs/$DISTRO"
+    local ROOTFS_OLD="$HOME/proot-distro/installed-rootfs/$DISTRO"
+
+    if [ -f "$ROOTFS_NEW/etc/debian_version" ] || [ -f "$ROOTFS_OLD/etc/debian_version" ]; then
         echo -e "${GREEN}[DONE]${RESET} Debian already installed, skipping download"
+    elif proot-distro login "$DISTRO" -- true 2>/dev/null; then
+        echo -e "${GREEN}[DONE]${RESET} Debian already installed (verified via login test)"
     else
         run_task "Downloading & installing Debian (~300MB)" \
             "proot-distro install $DISTRO"

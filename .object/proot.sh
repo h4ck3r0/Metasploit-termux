@@ -43,12 +43,12 @@ banner() {
     echo -e " ╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝ "
     echo -e " ███████║███████╗   ██║   ╚██████╔╝██║     "
     echo -e " ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝     "
-    echo -e "${BLUE}  ╔══════════════════════════════════════╗${RESET}"
-    echo -e "${BLUE}  ║  ${YELLOW}Proot-Distro Installer (Debian)${BLUE}     ║${RESET}"
-    echo -e "${BLUE}  ║  ${CYAN}Author  : Raj Aryan (h4ck3r0)${BLUE}       ║${RESET}"
+    echo -e "${BLUE}  ╔═══════════════════════════════════════╗${RESET}"
+    echo -e "${BLUE}  ║  ${YELLOW}Proot-Distro Installer (Debian)${BLUE}      ║${RESET}"
+    echo -e "${BLUE}  ║  ${CYAN}Author  : Raj Aryan (h4ck3r0)${BLUE}        ║${RESET}"
     echo -e "${BLUE}  ║  ${CYAN}Method  : Rapid7 Official Omnibus${BLUE}    ║${RESET}"
     echo -e "${BLUE}  ║  ${CYAN}Distro  : Debian (Lightweight ~300MB)${BLUE}║${RESET}"
-    echo -e "${BLUE}  ╚══════════════════════════════════════╝${RESET}"
+    echo -e "${BLUE}  ╚═══════════════════════════════════════╝${RESET}"
     echo -e "${CYAN}  Logs saved to: ~/proot_install.log${RESET}\n"
 }
 
@@ -213,63 +213,95 @@ create_launchers() {
     echo -e "\n${BOLD}${CYAN}[STEP 5]${RESET} Creating launcher scripts...\n"
 
     # ── msfconsole launcher ──────────────────
-    cat > "$PREFIX/bin/msfconsole" << LAUNCHER_EOF
+    cat > "$PREFIX/bin/msfconsole" << 'LAUNCHER_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 # Metasploit Console Launcher (proot-distro / Debian)
-# Auto-starts PostgreSQL and launches msfconsole
-# /sdcard is mounted so payloads save directly to phone storage
+# Auto-initializes PostgreSQL cluster if needed, then launches msfconsole
 
 DISTRO="debian"
-SDCARD="/sdcard"
 
 echo -e "\e[36m[*] Starting Metasploit via Debian proot...\e[0m"
-echo -e "\e[33m[*] /sdcard is mounted — save payloads to /sdcard/MSF/\e[0m\n"
+echo -e "\e[33m[*] Save payloads to /sdcard/MSF/payloads/\e[0m\n"
 
-proot-distro login \$DISTRO \\
-    --bind \$SDCARD:/sdcard \\
-    --bind /sdcard/MSF:/root/msf-output \\
-    -- bash -c "
-        service postgresql start 2>/dev/null || \\
-        pg_ctlcluster 15 main start 2>/dev/null || \\
-        pg_ctlcluster 16 main start 2>/dev/null || true
-        sleep 1
-        /opt/metasploit-framework/bin/msfconsole \"\$@\"
-    " -- "\$@"
+proot-distro login $DISTRO \
+    --bind /sdcard/MSF:/root/msf-output \
+    -- bash -c '
+        # ── Detect installed PostgreSQL version ──────────────────────
+        PG_VER=$(ls /etc/postgresql/ 2>/dev/null | sort -n | tail -1)
+
+        if [ -z "$PG_VER" ]; then
+            echo "[!] PostgreSQL not found inside Debian. Run: msf-shell → apt install postgresql"
+        else
+            # ── Create cluster if it does not exist ──────────────────
+            CLUSTERS=$(pg_lsclusters 2>/dev/null | grep -v "^Ver" | wc -l)
+            if [ "$CLUSTERS" -eq 0 ]; then
+                echo "[*] No PostgreSQL cluster found — creating one..."
+                pg_createcluster $PG_VER main --start 2>/dev/null \
+                    && echo "[*] Cluster created and started." \
+                    || echo "[!] Cluster creation failed — MSF will run without DB"
+            else
+                # ── Start existing cluster ────────────────────────────
+                pg_ctlcluster $PG_VER main start 2>/dev/null || true
+            fi
+
+            # ── Create msf user + database on first run ───────────────
+            sleep 1
+            su postgres -c "psql -c \"CREATE USER msf WITH PASSWORD '"'"'msf123'"'"';\"" 2>/dev/null || true
+            su postgres -c "psql -c \"CREATE DATABASE msf OWNER msf;\"" 2>/dev/null || true
+            su postgres -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE msf TO msf;\"" 2>/dev/null || true
+
+            # ── Write database.yml if missing ─────────────────────────
+            if [ ! -f /root/.msf4/database.yml ]; then
+                mkdir -p /root/.msf4
+                cat > /root/.msf4/database.yml << DB_EOF
+production:
+  adapter: postgresql
+  database: msf
+  username: msf
+  password: msf123
+  host: 127.0.0.1
+  port: 5432
+  pool: 5
+  timeout: 5
+DB_EOF
+                echo "[*] Database config written."
+            fi
+        fi
+
+        /opt/metasploit-framework/bin/msfconsole "$@"
+    ' -- "$@"
 LAUNCHER_EOF
 
     # ── msfvenom launcher ────────────────────
     cat > "$PREFIX/bin/msfvenom" << VENOM_EOF
 #!/data/data/com.termux/files/usr/bin/bash
 # Metasploit Venom Launcher (proot-distro / Debian)
-# Default output goes to /sdcard/MSF/payloads/ for easy phone access
+# /sdcard is auto-mounted by proot-distro
 # Usage: msfvenom -p <payload> LHOST=<ip> LPORT=<port> -o /sdcard/MSF/payloads/output.apk
 
 DISTRO="debian"
-SDCARD="/sdcard"
 
 # If -o flag not given, show hint
 if [[ "\$*" != *"-o"* ]] && [[ "\$*" != *"--out"* ]]; then
     echo -e "\e[33m[TIP] No output file set. Save to phone: -o /sdcard/MSF/payloads/payload.apk\e[0m"
 fi
 
-proot-distro login \$DISTRO \\
-    --bind \$SDCARD:/sdcard \\
+proot-distro login \$DISTRO \
     -- bash -c "/opt/metasploit-framework/bin/msfvenom \"\$@\"" -- "\$@"
 VENOM_EOF
 
     # ── msf-shell: interactive Debian shell ──
     cat > "$PREFIX/bin/msf-shell" << SHELL_EOF
 #!/data/data/com.termux/files/usr/bin/bash
-# Drop into Debian proot shell with /sdcard mounted
+# Drop into Debian proot shell with /sdcard auto-mounted
 # Use this to build tools, copy files, etc.
-# Files saved to /root are in ~/debian/root/ on Termux
+# /sdcard is available inside — copy files: cp /root/file.apk /sdcard/MSF/
 
 DISTRO="debian"
 echo -e "\e[36m[*] Entering Debian shell (proot)\e[0m"
-echo -e "\e[33m[*] /sdcard mounted — copy files: cp /root/file.apk /sdcard/MSF/\e[0m\n"
+echo -e "\e[33m[*] /sdcard is auto-mounted — cp /root/file /sdcard/MSF/\e[0m\n"
 
-proot-distro login \$DISTRO \\
-    --bind /sdcard:/sdcard \\
+proot-distro login \$DISTRO \
     --bind /sdcard/MSF:/root/msf-output
 SHELL_EOF
 

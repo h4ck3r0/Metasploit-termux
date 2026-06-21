@@ -50,9 +50,7 @@ run_task() {
     fi
 }
 
-# ─────────────────────────────────────────────
-# Get latest MSF version from GitHub
-# ─────────────────────────────────────────────
+
 get_latest_msf_version() {
     local ver
     ver=$(curl -s "https://api.github.com/repos/rapid7/metasploit-framework/releases/latest" \
@@ -69,9 +67,7 @@ get_latest_msf_version() {
     echo "$ver"
 }
 
-# ─────────────────────────────────────────────
-# Detect installed Ruby version dynamically
-# ─────────────────────────────────────────────
+
 get_ruby_gem_path() {
     ruby -e "puts Gem.default_dir" 2>/dev/null || echo "$PREFIX/lib/ruby/gems/3.4.0"
 }
@@ -203,9 +199,7 @@ WRAPPER_EOF
     " 2>/dev/null || true
 }
 
-# ─────────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────────
+
 banner
 > "$LOG_FILE"
 

@@ -71,7 +71,7 @@ install_deps() {
     "
 }
 
-# 🔥 FIXED Nokogiri (no Gumbo compilation)
+# FIXED Nokogiri (no Gumbo compilation)
 manual_nokogiri_fix() {
     cd $HOME
 

@@ -292,7 +292,7 @@ exec proot-distro login $DISTRO \
 VENOM_EOF
 
     # ── msf-shell: interactive Debian shell ──
-    cat > "$PREFIX/bin/msf-shell" << SHELL_EOF
+    cat > "$PREFIX/bin/msf-shell" << 'SHELL_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 # Drop into Debian proot shell with /sdcard auto-mounted
 # Use this to build tools, copy files, etc.
@@ -302,8 +302,11 @@ DISTRO="debian"
 echo -e "\e[36m[*] Entering Debian shell (proot)\e[0m"
 echo -e "\e[33m[*] /sdcard is auto-mounted — cp /root/file /sdcard/MSF/\e[0m\n"
 
-proot-distro login \$DISTRO \
-    --bind /sdcard/MSF:/root/msf-output
+if [ $# -eq 0 ]; then
+    exec proot-distro login $DISTRO --bind /sdcard/MSF:/root/msf-output
+else
+    exec proot-distro login $DISTRO --bind /sdcard/MSF:/root/msf-output -- "$@"
+fi
 SHELL_EOF
 
     chmod +x "$PREFIX/bin/msfconsole" \

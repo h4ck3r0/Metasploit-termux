@@ -98,7 +98,9 @@ install_proot() {
 install_debian() {
     echo -e "\n${BOLD}${CYAN}[STEP 3]${RESET} Installing Debian (lightweight)...\n"
 
-    if proot-distro list | grep -q "debian.*installed"; then
+    # Check rootfs directory directly — more reliable than parsing proot-distro list output
+    local ROOTFS="$HOME/proot-distro/installed-rootfs/$DISTRO"
+    if [ -d "$ROOTFS" ] && [ -f "$ROOTFS/etc/debian_version" ]; then
         echo -e "${GREEN}[DONE]${RESET} Debian already installed, skipping download"
     else
         run_task "Downloading & installing Debian (~300MB)" \
@@ -124,7 +126,7 @@ echo "[*] Installing core dependencies..."
 apt-get install -y --no-install-recommends \
     curl wget gnupg2 lsb-release \
     postgresql postgresql-contrib \
-    ca-certificates software-properties-common \
+    ca-certificates \
     libpcap-dev libpq-dev \
     iputils-ping nmap net-tools \
     ruby ruby-dev build-essential

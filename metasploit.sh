@@ -87,14 +87,74 @@ restore_data() {
 }
 
 update_tool() {
-    echo -e "${GREEN}[*] Updating Tool...${RESET}"
-    echo -e "${YELLOW}[!] This will re-clone the installer. Your MSF installation is NOT affected.${RESET}"
-    sleep 2
-    rm -rf "$INSTALL_DIR"
-    cd "$HOME" || exit
-    git clone https://github.com/h4ck3r0/Metasploit-termux
-    cd "$INSTALL_DIR" || exit
-    bash metasploit.sh
+    banner
+    echo -e "${BOLD}${CYAN}[UPDATE]${RESET} Checking for updates...\n"
+
+    # ── 1. Update Termux installer scripts ──────────────────────────
+    if [ -d "$INSTALL_DIR/.git" ]; then
+        # It's a git repo — try fast pull first
+        local OLD_COMMIT
+        OLD_COMMIT=$(git -C "$INSTALL_DIR" rev-parse --short HEAD 2>/dev/null)
+
+        echo -ne "${YELLOW}[...]${RESET} Pulling latest installer from GitHub"
+        git -C "$INSTALL_DIR" pull --ff-only origin main > /dev/null 2>&1
+        local PULL_STATUS=$?
+
+        local NEW_COMMIT
+        NEW_COMMIT=$(git -C "$INSTALL_DIR" rev-parse --short HEAD 2>/dev/null)
+
+        if [ $PULL_STATUS -eq 0 ]; then
+            if [ "$OLD_COMMIT" = "$NEW_COMMIT" ]; then
+                echo -e "\r${GREEN}[DONE]${RESET} Installer already up to date (${CYAN}${OLD_COMMIT}${RESET})"
+            else
+                echo -e "\r${GREEN}[DONE]${RESET} Installer updated: ${YELLOW}${OLD_COMMIT}${RESET} → ${GREEN}${NEW_COMMIT}${RESET}"
+            fi
+        else
+            # Pull failed (diverged or conflict) — re-clone as fallback
+            echo -e "\r${YELLOW}[WARN]${RESET} Git pull failed — re-cloning installer (your MSF is NOT affected)"
+            rm -rf "$INSTALL_DIR"
+            git clone --depth=1 https://github.com/h4ck3r0/Metasploit-termux "$INSTALL_DIR" \
+                && echo -e "${GREEN}[DONE]${RESET} Installer re-cloned successfully" \
+                || { echo -e "${RED}[FAIL]${RESET} Clone failed. Check internet connection."; exit 1; }
+        fi
+    else
+        # Not a git repo — do a clean clone
+        echo -e "${YELLOW}[!] No git history found — doing fresh clone${RESET}"
+        rm -rf "$INSTALL_DIR"
+        git clone --depth=1 https://github.com/h4ck3r0/Metasploit-termux "$INSTALL_DIR" \
+            && echo -e "${GREEN}[DONE]${RESET} Installer cloned successfully" \
+            || { echo -e "${RED}[FAIL]${RESET} Clone failed. Check internet connection."; exit 1; }
+    fi
+
+    # ── 2. Update Termux packages ────────────────────────────────────
+    echo -ne "${YELLOW}[...]${RESET} Updating Termux packages"
+    pkg update -y > /dev/null 2>&1 && pkg upgrade -y > /dev/null 2>&1
+    echo -e "\r${GREEN}[DONE]${RESET} Termux packages updated"
+
+    # ── 3. Update proot-distro (if installed) ───────────────────────
+    if command -v proot-distro > /dev/null 2>&1; then
+        echo -ne "${YELLOW}[...]${RESET} Updating proot-distro"
+        pkg install -y proot-distro > /dev/null 2>&1
+        echo -e "\r${GREEN}[DONE]${RESET} proot-distro updated"
+    fi
+
+    # ── 4. Offer MSF update inside Debian (proot method) ────────────
+    local ROOTFS="$HOME/proot-distro/installed-rootfs/debian"
+    if [ -d "$ROOTFS" ] && [ -f "$ROOTFS/etc/debian_version" ]; then
+        echo ""
+        echo -ne "${CYAN}[?]${RESET} Update Metasploit inside Debian proot? (y/N): "
+        read -r msf_update
+        if [[ "$msf_update" =~ ^[yY]$ ]]; then
+            echo -e "${GREEN}[*] Updating Metasploit Framework inside Debian...${RESET}"
+            proot-distro login debian -- bash -c "apt-get update -y && apt-get upgrade -y metasploit-framework" \
+                && echo -e "${GREEN}[DONE]${RESET} Metasploit updated inside Debian" \
+                || echo -e "${YELLOW}[SKIP]${RESET} MSF update had issues — try: msf-shell → apt upgrade"
+        fi
+    fi
+
+    echo -e "\n${GREEN}✔ Update complete!${RESET}\n"
+    sleep 1
+    cd "$INSTALL_DIR" && bash metasploit.sh
 }
 
 menu() {

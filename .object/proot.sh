@@ -15,7 +15,16 @@
 PREFIX="/data/data/com.termux/files/usr"
 LOG_FILE="$HOME/proot_install.log"
 DISTRO="debian"
-SDCARD="/sdcard"
+
+# Storage path — termux-setup-storage creates ~/storage/shared → /sdcard
+# Prefer the Termux symlink path; fall back to raw /sdcard
+if [ -d "$HOME/storage/shared" ]; then
+    SDCARD="$HOME/storage/shared"
+else
+    SDCARD="/sdcard"
+fi
+
+MSF_DIR="$SDCARD/MSF"
 
 RED="\e[31m"
 GREEN="\e[32m"
@@ -71,15 +80,29 @@ run_task() {
 setup_storage() {
     echo -e "\n${BOLD}${CYAN}[STEP 1]${RESET} Setting up storage access...\n"
 
-    if [ ! -d "$SDCARD" ]; then
+    if [ ! -d "$HOME/storage/shared" ] && [ ! -d "/sdcard" ]; then
         echo -e "${YELLOW}[!] Requesting storage permission...${RESET}"
         termux-setup-storage
         sleep 3
     fi
 
-    # Create MSF output folder on SD card
-    mkdir -p "$SDCARD/MSF/payloads" "$SDCARD/MSF/loot" 2>/dev/null
-    echo -e "${GREEN}[DONE]${RESET} Storage ready — MSF folder: ${CYAN}/sdcard/MSF/${RESET}\n"
+    # Re-detect after setup in case it just ran
+    if [ -d "$HOME/storage/shared" ]; then
+        SDCARD="$HOME/storage/shared"
+    elif [ -d "/sdcard" ]; then
+        SDCARD="/sdcard"
+    else
+        echo -e "${RED}[!] Storage not accessible. Grant permission manually and re-run.${RESET}"
+        exit 1
+    fi
+
+    MSF_DIR="$SDCARD/MSF"
+
+    # Create MSF folder structure
+    mkdir -p "$MSF_DIR/payloads" "$MSF_DIR/loot" "$MSF_DIR/backups" 2>/dev/null
+    echo -e "${GREEN}[DONE]${RESET} Storage ready"
+    echo -e "        Path    : ${CYAN}$SDCARD${RESET}"
+    echo -e "        MSF dir : ${CYAN}$MSF_DIR${RESET}\n"
 }
 
 # ─────────────────────────────────────────────

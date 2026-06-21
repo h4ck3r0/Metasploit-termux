@@ -7,7 +7,14 @@
 ################################################################
 
 MSF_DIR="$HOME/metasploit-framework"
-SDCARD="/sdcard"
+
+# termux-setup-storage creates ~/storage/shared → /sdcard
+if [ -d "$HOME/storage/shared" ]; then
+    SDCARD="$HOME/storage/shared"
+else
+    SDCARD="/sdcard"
+fi
+
 BACKUP_DIR="$SDCARD/MSF/backups"
 INSTALLER_DIR="$HOME/Metasploit-termux"
 
@@ -30,11 +37,16 @@ banner() {
 
 banner
 
-# ── Check storage access ──────────────────────
+# ── Check storage access ────────────────
 if [ ! -d "$SDCARD" ]; then
     echo -e "${YELLOW}[*] Requesting storage permission...${RESET}"
     termux-setup-storage
     sleep 3
+    # Re-detect after setup
+    if [ -d "$HOME/storage/shared" ]; then
+        SDCARD="$HOME/storage/shared"
+        BACKUP_DIR="$SDCARD/MSF/backups"
+    fi
 fi
 
 # ── Check backup folder exists ────────────────

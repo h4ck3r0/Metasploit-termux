@@ -273,7 +273,7 @@ DB_EOF
 LAUNCHER_EOF
 
     # ── msfvenom launcher ────────────────────
-    cat > "$PREFIX/bin/msfvenom" << VENOM_EOF
+    cat > "$PREFIX/bin/msfvenom" << 'VENOM_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 # Metasploit Venom Launcher (proot-distro / Debian)
 # /sdcard is auto-mounted by proot-distro
@@ -282,12 +282,13 @@ LAUNCHER_EOF
 DISTRO="debian"
 
 # If -o flag not given, show hint
-if [[ "\$*" != *"-o"* ]] && [[ "\$*" != *"--out"* ]]; then
-    echo -e "\e[33m[TIP] No output file set. Save to phone: -o /sdcard/MSF/payloads/payload.apk\e[0m"
+if [[ "$*" != *"-o"* ]] && [[ "$*" != *"--out"* ]]; then
+    echo -e "\e[33m[TIP] No output file specified. Save to phone: -o /sdcard/MSF/payloads/payload.apk\e[0m"
 fi
 
-proot-distro login \$DISTRO \
-    -- bash -c "/opt/metasploit-framework/bin/msfvenom \"\$@\"" -- "\$@"
+# Pass args directly to msfvenom — no bash -c wrapper to avoid quoting issues
+exec proot-distro login $DISTRO \
+    -- /opt/metasploit-framework/bin/msfvenom "$@"
 VENOM_EOF
 
     # ── msf-shell: interactive Debian shell ──
